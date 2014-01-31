@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">LetsDo</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world! My name is LetsDo :)</string>
+	<string name="taskTitle">Title</string><string name="taskAssignee">Assignee</string><string name="taskCategory">Category</string><string name="taskDescription">Descrition</string><string name="addTask">Add	
+	
+	
+	
+</string>
+	<string name="titleHint">Do</string>
+	<string name="categoryHint">Project A</string>
+	<string name="assigneeHint">Alex</string>
+</resources>

@@ -1,7 +1,10 @@
 package nz.alex.letsdo;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,6 +15,8 @@ public class TaskSource {
 
 	private SQLiteHelper dbHelper;
 	private SQLiteDatabase database;
+
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()); 
 
 	public TaskSource(Context context) {
 		// TODO Auto-generated constructor stub
@@ -32,6 +37,10 @@ public class TaskSource {
 	    values.put(dbHelper.COLUMN_CATEGORY, aTask.category);
 	    values.put(dbHelper.COLUMN_ASSIGNEE, aTask.assignee);
 	    values.put(dbHelper.COLUMN_DESCRIPTION, aTask.description);
+	    values.put(dbHelper.COLUMN_DATEDUE, aTask.dateDue);
+	   
+	    values.put(dbHelper.COLUMN_DATECREATED, dateFormat.format(new Date()));
+	    values.put(dbHelper.COLUMN_DATEMODIFIED, dateFormat.format(new Date()));
 	    
 	    database.insert(dbHelper.TABLE_TASKS, null, values);
 	}

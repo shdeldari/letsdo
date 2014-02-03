@@ -11,10 +11,13 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	public final String TABLE_TASKS = "tasks";
 	public final String COLUMN_ID = "_id";
 	
-	public final String COLUMN_TITLE = context.getString(R.id.taskTitle);
-	public final String COLUMN_CATEGORY = context.getString(R.id.taskCategory);
-	public final String COLUMN_ASSIGNEE = context.getString(R.id.taskAssignee);
-	public final String COLUMN_DESCRIPTION = context.getString(R.id.taskDescription);
+	public final String COLUMN_TITLE = context.getString(R.string.taskTitle);
+	public final String COLUMN_CATEGORY = context.getString(R.string.taskCategory);
+	public final String COLUMN_ASSIGNEE = context.getString(R.string.taskAssignee);
+	public final String COLUMN_DESCRIPTION = context.getString(R.string.taskDescription);
+	public final String COLUMN_DATEDUE = context.getString(R.string.taskDateDue);
+	public final String COLUMN_DATECREATED = context.getString(R.string.taskDateCreated);
+	public final String COLUMN_DATEMODIFIED = context.getString(R.string.taskDateModified);
 	
 	private static final String DATABASE_NAME = "letsdotasks.db";
 	private static final int DATABASE_VERSION = 1;
@@ -32,7 +35,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 				+ COLUMN_TITLE + " text not null, " 
 				+ COLUMN_CATEGORY + " text not null, " 
 				+ COLUMN_ASSIGNEE + " text not null, " 
-				+ COLUMN_DESCRIPTION + " text not null);";
+				+ COLUMN_DATEDUE + " text, "
+				+ COLUMN_DATECREATED + " text not null, "
+				+ COLUMN_DATEMODIFIED + " text not null, "
+				+ COLUMN_DESCRIPTION + " text);";
 
 		database.execSQL(DATABASE_CREATE);
 	}

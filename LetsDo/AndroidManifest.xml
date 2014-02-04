@@ -22,6 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="nz.alex.letsdo.AddActivity"
+            android:label="@string/title_activity_add"
+            android:parentActivityName="nz.alex.letsdo.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="nz.alex.letsdo.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

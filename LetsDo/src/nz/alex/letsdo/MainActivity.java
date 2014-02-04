@@ -2,10 +2,9 @@ package nz.alex.letsdo;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -23,10 +22,13 @@ public class MainActivity extends Activity {
 	}
 
 	public void onClick (View view) {
-		TaskModel aTask = new TaskModel(((EditText)findViewById(R.id.taskTitle)).getText().toString(), ((EditText)findViewById(R.id.taskCategory)).getText().toString(),
+		/*TaskModel aTask = new TaskModel(((EditText)findViewById(R.id.taskTitle)).getText().toString(), ((EditText)findViewById(R.id.taskCategory)).getText().toString(),
 				((EditText)findViewById(R.id.taskAssignee)).getText().toString(), ((EditText)findViewById(R.id.taskDescription)).getText().toString());
 		
 		Toast.makeText(this, aTask.getTitle(),
-			Toast.LENGTH_LONG).show();
+			Toast.LENGTH_LONG).show();*/
+		
+		Intent intent = new Intent(this, AddActivity.class);
+		startActivity(intent);
 	} 
 }

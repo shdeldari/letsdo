@@ -58,7 +58,7 @@ public class AddActivity extends Activity {
 				((EditText)findViewById(R.id.taskAssignee)).getText().toString(), ((EditText)findViewById(R.id.taskDescription)).getText().toString());
 
 		Context context = getApplicationContext();
-		CharSequence text = aTask.getTitle();
+		CharSequence text = aTask.toString();
 		int duration = Toast.LENGTH_SHORT;
 
 		Toast toast = Toast.makeText(context, text, duration);

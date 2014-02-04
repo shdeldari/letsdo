@@ -16,6 +16,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	public final String COLUMN_ASSIGNEE = context.getString(R.string.taskAssignee);
 	public final String COLUMN_DESCRIPTION = context.getString(R.string.taskDescription);
 	public final String COLUMN_DATEDUE = context.getString(R.string.taskDateDue);
+
 	public final String COLUMN_DATECREATED = context.getString(R.string.taskDateCreated);
 	public final String COLUMN_DATEMODIFIED = context.getString(R.string.taskDateModified);
 	
@@ -35,10 +36,11 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 				+ COLUMN_TITLE + " text not null, " 
 				+ COLUMN_CATEGORY + " text not null, " 
 				+ COLUMN_ASSIGNEE + " text not null, " 
+				+ COLUMN_DESCRIPTION + " text, "
 				+ COLUMN_DATEDUE + " text, "
+	
 				+ COLUMN_DATECREATED + " text not null, "
-				+ COLUMN_DATEMODIFIED + " text not null, "
-				+ COLUMN_DESCRIPTION + " text);";
+				+ COLUMN_DATEMODIFIED + " text not null);";
 
 		database.execSQL(DATABASE_CREATE);
 	}

@@ -2,12 +2,11 @@ package nz.alex.letsdo;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Locale;
-
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -16,6 +15,10 @@ public class TaskSource {
 	private SQLiteHelper dbHelper;
 	private SQLiteDatabase database;
 
+	private final String allColumns[] = {dbHelper.COLUMN_ID, dbHelper.COLUMN_TITLE,dbHelper.COLUMN_CATEGORY, 
+			dbHelper.COLUMN_ASSIGNEE, dbHelper.COLUMN_DESCRIPTION, dbHelper.COLUMN_DATEDUE, 
+			dbHelper.COLUMN_DATECREATED, dbHelper.COLUMN_DATEMODIFIED}; 
+	
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()); 
 
 	public TaskSource(Context context) {
@@ -32,28 +35,49 @@ public class TaskSource {
 	}
 
 	public void addTask(TaskModel aTask){
-	    ContentValues values = new ContentValues();
-	    values.put(dbHelper.COLUMN_TITLE, aTask.title);
-	    values.put(dbHelper.COLUMN_CATEGORY, aTask.category);
-	    values.put(dbHelper.COLUMN_ASSIGNEE, aTask.assignee);
-	    values.put(dbHelper.COLUMN_DESCRIPTION, aTask.description);
-	    values.put(dbHelper.COLUMN_DATEDUE, aTask.dateDue);
-	   
-	    values.put(dbHelper.COLUMN_DATECREATED, dateFormat.format(new Date()));
-	    values.put(dbHelper.COLUMN_DATEMODIFIED, dateFormat.format(new Date()));
-	    
-	    database.insert(dbHelper.TABLE_TASKS, null, values);
+		ContentValues values = new ContentValues();
+		values.put(dbHelper.COLUMN_TITLE, aTask.title);
+		values.put(dbHelper.COLUMN_CATEGORY, aTask.category);
+		values.put(dbHelper.COLUMN_ASSIGNEE, aTask.assignee);
+		values.put(dbHelper.COLUMN_DESCRIPTION, aTask.description);
+		values.put(dbHelper.COLUMN_DATEDUE, aTask.dateDue);
+
+		values.put(dbHelper.COLUMN_DATECREATED, dateFormat.format(new Date()));
+		values.put(dbHelper.COLUMN_DATEMODIFIED, dateFormat.format(new Date()));
+
+		database.insert(dbHelper.TABLE_TASKS, null, values);
 	}
 
 	public void deleteTask(TaskModel aTask){
 
 	}
 
-	public List<TaskModel> getTasksOrderedBy(String column){
-		List<TaskModel> tasksList = new ArrayList<TaskModel>();
+	public Hashtable<Integer, TaskModel> getTasksOrderedBy(String column){
+		Hashtable<Integer, TaskModel> tasksTable = new Hashtable<Integer, TaskModel>();
 
-		// TODO Build the list of the tasks here
+		Cursor cursor = database.query(dbHelper.TABLE_TASKS, allColumns, null, null, null, null, column);
 
-		return tasksList;
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			tasksTable.put(cursor.getInt(0), cursorToTask(cursor));
+			cursor.moveToNext();
+		}
+
+		cursor.close();
+		return tasksTable;
+	}
+	
+	public Hashtable<Integer, TaskModel> getAllTasks(){
+		return getTasksOrderedBy(dbHelper.COLUMN_DATEMODIFIED);	
+	}
+	
+	private TaskModel cursorToTask(Cursor cursor){
+		TaskModel task = new TaskModel(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5));
+		return task;
+	}
+	
+	public int getLen(){
+		Cursor cursor = database.query(dbHelper.TABLE_TASKS, allColumns, null, null, null, null, null);
+		return cursor.getCount();
 	}
 }

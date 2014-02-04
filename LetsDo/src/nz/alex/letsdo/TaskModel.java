@@ -4,7 +4,6 @@ public class TaskModel {
 
 	protected String title, category, assignee, description, 
 										dateDue, dateCreated;
-
 	public TaskModel(String tTitle, String tCategory, String tAssignee, String tDescription, String tDateDue){
 		setTask(tTitle, tCategory, tAssignee, tDescription, tDateDue);
 	}
@@ -21,7 +20,7 @@ public class TaskModel {
 		dateDue = tDateDue;
 	}
 	
-	public String getTitle(){
+	public String toString(){
 		return title;
 	}
 }

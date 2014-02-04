@@ -1,17 +1,35 @@
 package nz.alex.letsdo;
 
+import java.util.ArrayList;
+import java.util.List;
 import android.os.Bundle;
-import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ListActivity {
+
+	private TaskSource taskSource;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		taskSource = new TaskSource(this);
+		taskSource.open();
+
+		if (taskSource.getLen() > 0){
+			List<TaskModel> values = new ArrayList<TaskModel>(taskSource.getAllTasks().values());
+
+			// use the SimpleCursorAdapter to show the
+			// elements in a ListView
+			ArrayAdapter<TaskModel> adapter = new ArrayAdapter<TaskModel>(this,
+					android.R.layout.simple_list_item_1, values);
+			setListAdapter(adapter);	
+		}
 	}
 
 	@Override
@@ -22,12 +40,6 @@ public class MainActivity extends Activity {
 	}
 
 	public void onClick (View view) {
-		/*TaskModel aTask = new TaskModel(((EditText)findViewById(R.id.taskTitle)).getText().toString(), ((EditText)findViewById(R.id.taskCategory)).getText().toString(),
-				((EditText)findViewById(R.id.taskAssignee)).getText().toString(), ((EditText)findViewById(R.id.taskDescription)).getText().toString());
-		
-		Toast.makeText(this, aTask.getTitle(),
-			Toast.LENGTH_LONG).show();*/
-		
 		Intent intent = new Intent(this, AddActivity.class);
 		startActivity(intent);
 	} 

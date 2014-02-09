@@ -14,10 +14,6 @@ public class TaskSource {
 
 	private SQLiteHelper dbHelper;
 	private SQLiteDatabase database;
-
-	private final String allColumns[] = {dbHelper.COLUMN_ID, dbHelper.COLUMN_TITLE,dbHelper.COLUMN_CATEGORY, 
-			dbHelper.COLUMN_ASSIGNEE, dbHelper.COLUMN_DESCRIPTION, dbHelper.COLUMN_DATEDUE, 
-			dbHelper.COLUMN_DATECREATED, dbHelper.COLUMN_DATEMODIFIED}; 
 	
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()); 
 
@@ -45,7 +41,7 @@ public class TaskSource {
 		values.put(dbHelper.COLUMN_DATECREATED, dateFormat.format(new Date()));
 		values.put(dbHelper.COLUMN_DATEMODIFIED, dateFormat.format(new Date()));
 
-		database.insert(dbHelper.TABLE_TASKS, null, values);
+		database.insert(SQLiteHelper.TABLE_TASKS, null, values);
 	}
 
 	public void deleteTask(TaskModel aTask){
@@ -55,7 +51,7 @@ public class TaskSource {
 	public Hashtable<Integer, TaskModel> getTasksOrderedBy(String column){
 		Hashtable<Integer, TaskModel> tasksTable = new Hashtable<Integer, TaskModel>();
 
-		Cursor cursor = database.query(dbHelper.TABLE_TASKS, allColumns, null, null, null, null, column);
+		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns, null, null, null, null, column);
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
@@ -77,7 +73,7 @@ public class TaskSource {
 	}
 	
 	public int getLen(){
-		Cursor cursor = database.query(dbHelper.TABLE_TASKS, allColumns, null, null, null, null, null);
+		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns, null, null, null, null, null);
 		return cursor.getCount();
 	}
 }

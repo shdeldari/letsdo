@@ -6,26 +6,32 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class SQLiteHelper extends SQLiteOpenHelper {
-	private Context context;
-	
-	public final String TABLE_TASKS = "tasks";
-	public final String COLUMN_ID = "_id";
-	
-	public final String COLUMN_TITLE = context.getString(R.string.taskTitle);
-	public final String COLUMN_CATEGORY = context.getString(R.string.taskCategory);
-	public final String COLUMN_ASSIGNEE = context.getString(R.string.taskAssignee);
-	public final String COLUMN_DESCRIPTION = context.getString(R.string.taskDescription);
-	public final String COLUMN_DATEDUE = context.getString(R.string.taskDateDue);
-
-	public final String COLUMN_DATECREATED = context.getString(R.string.taskDateCreated);
-	public final String COLUMN_DATEMODIFIED = context.getString(R.string.taskDateModified);
-	
+	public static final String TABLE_TASKS = "tasks";
 	private static final String DATABASE_NAME = "letsdotasks.db";
 	private static final int DATABASE_VERSION = 1;
 	
+	public final String COLUMN_ID = "_id";
+	public final String COLUMN_TITLE;
+	public final String COLUMN_CATEGORY;
+	public final String COLUMN_ASSIGNEE;
+	public final String COLUMN_DESCRIPTION;
+	public final String COLUMN_DATEDUE;
+	public final String COLUMN_DATECREATED;
+	public final String COLUMN_DATEMODIFIED;
+	
+	public String[] allColumns;
+
 	public SQLiteHelper(Context aContext) {
 		super(aContext, DATABASE_NAME, null, DATABASE_VERSION);
-		context = aContext;
+		allColumns = new String[8];
+		allColumns[0] = COLUMN_ID;
+		allColumns[1] = COLUMN_TITLE = aContext.getString(R.string.taskTitle);
+		allColumns[2] = COLUMN_CATEGORY = aContext.getString(R.string.taskCategory);
+		allColumns[3] = COLUMN_ASSIGNEE = aContext.getString(R.string.taskAssignee);
+		allColumns[4] = COLUMN_DESCRIPTION = aContext.getString(R.string.taskDescription);
+		allColumns[5] = COLUMN_DATEDUE = aContext.getString(R.string.taskDateDue);
+		allColumns[6] = COLUMN_DATECREATED = aContext.getString(R.string.taskDateCreated);
+		allColumns[7] = COLUMN_DATEMODIFIED = aContext.getString(R.string.taskDateModified);
 	}
 	
 	@Override

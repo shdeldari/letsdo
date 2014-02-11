@@ -4,6 +4,7 @@ public class TaskModel {
 
 	protected String title, category, assignee, description, 
 										dateDue;
+	
 	public TaskModel(String tTitle, String tCategory, String tAssignee, String tDescription, String tDateDue){
 		setTask(tTitle, tCategory, tAssignee, tDescription, tDateDue);
 	}

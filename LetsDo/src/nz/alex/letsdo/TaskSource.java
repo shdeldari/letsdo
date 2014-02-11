@@ -30,9 +30,7 @@ public class TaskSource {
 	}
 
 	public void open() throws SQLException {
-		System.out.println("before opening DB");
 		database = dbHelper.getWritableDatabase();
-		System.out.println("after opening DB");
 	}
 
 	public void close() {
@@ -51,6 +49,21 @@ public class TaskSource {
 		values.put(dbHelper.COLUMN_DATEMODIFIED, dateFormat.format(new Date()));
 
 		database.insert(SQLiteHelper.TABLE_TASKS, null, values);
+	}
+
+	public void changeTask(Integer rowID, TaskModel aTask){
+		ContentValues values = new ContentValues();
+		values.put(dbHelper.COLUMN_TITLE, aTask.title);
+		values.put(dbHelper.COLUMN_CATEGORY, aTask.category);
+		values.put(dbHelper.COLUMN_ASSIGNEE, aTask.assignee);
+		values.put(dbHelper.COLUMN_DESCRIPTION, aTask.description);
+		values.put(dbHelper.COLUMN_DATEDUE, aTask.dateDue);
+		
+		values.put(dbHelper.COLUMN_DATEMODIFIED, dateFormat.format(new Date()));
+		
+		String where = "_id=" + rowID;
+		
+		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
 	}
 
 	public void deleteTask(TaskModel aTask){

@@ -12,12 +12,16 @@ import android.support.v4.app.NavUtils;
 
 public class AddActivity extends Activity {
 
+	private TaskSource taskSource;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add);
 		// Show the Up button in the action bar.
 		setupActionBar();
+		taskSource = TaskSource.GetInstance(this);
+		taskSource.open();
 	}
 
 	/**
@@ -57,11 +61,18 @@ public class AddActivity extends Activity {
 		TaskModel aTask = new TaskModel(((EditText)findViewById(R.id.taskTitle)).getText().toString(), ((EditText)findViewById(R.id.taskCategory)).getText().toString(),
 				((EditText)findViewById(R.id.taskAssignee)).getText().toString(), ((EditText)findViewById(R.id.taskDescription)).getText().toString());
 
+		taskSource.addTask(aTask);
+
 		Context context = getApplicationContext();
 		CharSequence text = aTask.toString();
 		int duration = Toast.LENGTH_SHORT;
 
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();	
+	}
+	
+	public void onStop(){
+		taskSource.close();
+		super.onStop();
 	}
 }

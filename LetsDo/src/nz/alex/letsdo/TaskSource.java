@@ -12,12 +12,20 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class TaskSource {
 
-	private SQLiteHelper dbHelper;
-	private SQLiteDatabase database;
+	private SQLiteHelper dbHelper = null;
+	private SQLiteDatabase database = null;
 	
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()); 
-
-	public TaskSource(Context context) {
+	
+	private static TaskSource Instance = null;
+	
+	public static TaskSource GetInstance(Context context){
+		if (Instance == null)
+			return (Instance = new TaskSource(context));
+		return Instance;
+	}
+	
+	private TaskSource(Context context) {
 		dbHelper = new SQLiteHelper(context);
 	}
 

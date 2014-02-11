@@ -19,7 +19,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		taskSource = new TaskSource(this);
+		taskSource = TaskSource.GetInstance(this);
 		taskSource.open();
 
 		if (taskSource.getLen() > 0){
@@ -42,7 +42,9 @@ public class MainActivity extends Activity {
 	}
 
 	public void onClick (View view) {
+		taskSource.close();
 		Intent intent = new Intent(this, AddActivity.class);
 		startActivity(intent);
 	} 
+	
 }

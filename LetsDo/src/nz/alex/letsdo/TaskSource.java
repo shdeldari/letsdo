@@ -70,6 +70,12 @@ public class TaskSource {
 
 	}
 
+	public TaskModel findTask(Integer rowID){
+		String where = "_id=" + rowID;
+		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns, where, null, null, null, null);
+		return new TaskModel(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4));
+	}
+	
 	public Hashtable<Integer, TaskModel> getTasksOrderedBy(String column){
 		Hashtable<Integer, TaskModel> tasksTable = new Hashtable<Integer, TaskModel>();
 

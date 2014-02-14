@@ -12,9 +12,12 @@
     <string name="taskDateCreated">Created_On</string>
     <string name="taskDateModified">Modified_On</string>
     <string name="addTask">Add</string>
+    <string name="saveTask">Save</string>
+    <string name="discardTask">Discard</string>
     <string name="titleHint">Do</string>
-    <string name="categoryHint">Project_A</string>
+    <string name="categoryHint">Project A</string>
     <string name="assigneeHint">Alex</string>
-    <string name="title_activity_add">AddActivity</string>
+    <string name="title_activity_add">Add</string>
+    <string name="title_activity_change">Change</string>
 
 </resources>

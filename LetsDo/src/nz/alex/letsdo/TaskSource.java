@@ -70,9 +70,12 @@ public class TaskSource {
 
 	}
 
-	public TaskModel findTask(Integer rowID){
-		String where = "_id=" + rowID;
-		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns, where, null, null, null, null);
+	public TaskModel findTask(String rowID) throws Exception{
+		String where = "_id = " + rowID;
+		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns,  where, null, null, null, null);
+		if (cursor.getCount() <= 0)
+			throw new Exception("Task not found!");
+		cursor.moveToFirst();
 		return new TaskModel(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4));
 	}
 	

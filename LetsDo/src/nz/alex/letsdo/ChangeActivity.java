@@ -25,10 +25,25 @@ public class ChangeActivity extends Activity {
 
 		taskSource = TaskSource.GetInstance(this);
 		taskSource.open();
+
+		try{
+			TaskModel aTask = taskSource.findTask(message);
+			
+			EditText editText = (EditText)findViewById(R.id.taskTitle);
+			editText.setText(aTask.title);
+			
+			editText = (EditText)findViewById(R.id.taskAssignee);
+			editText.setText(aTask.assignee);
+
+			editText = (EditText)findViewById(R.id.taskCategory);
+			editText.setText(aTask.category);
+			
+			editText = (EditText)findViewById(R.id.taskDescription);
+			editText.setText(aTask.description);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 		
-		TaskModel aTask = taskSource.findTask(Integer.valueOf(message));
-		EditText editText = (EditText)findViewById(R.id.taskTitle);
-		editText.setText(aTask.title);
 	}
 
 	/**

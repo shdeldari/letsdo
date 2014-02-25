@@ -2,6 +2,7 @@ package nz.alex.letsdo;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -48,6 +50,7 @@ public class MainActivity extends Activity {
 					startActivityForResult(intent, ADD_REQ);
 				}
 			});
+			list.setOnItemLongClickListener(itemLongClickListener);
 		}
 	}
 	
@@ -87,5 +90,19 @@ public class MainActivity extends Activity {
 		Intent intent = new Intent(this, AddActivity.class);
 		startActivity(intent);
 	} 
+	
+	public OnItemLongClickListener itemLongClickListener = new OnItemLongClickListener() {
+
+		@Override
+		public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+				int arg2, long arg3) {
+			System.out.println("multiple selection");
+//			Intent intent = new Intent(this, MultipleSelectorActivity.class);
+//			startActivities(intent);
+			return false;
+		}
+	};
+		
+	
 
 }

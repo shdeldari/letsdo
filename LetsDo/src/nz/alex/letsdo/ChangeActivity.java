@@ -5,19 +5,22 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.support.v4.app.NavUtils;
 
 public class ChangeActivity extends Activity {
+
+	protected TaskSource taskSource;
 	
-	private TaskSource taskSource;
+	protected String rowID;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		Intent intent = getIntent();
-		String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+		rowID = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
 
 		setContentView(R.layout.activity_change);
 		// Show the Up button in the action bar.
@@ -27,23 +30,23 @@ public class ChangeActivity extends Activity {
 		taskSource.open();
 
 		try{
-			TaskModel aTask = taskSource.findTask(message);
-			
+			TaskModel aTask = taskSource.findTask(rowID);
+
 			EditText editText = (EditText)findViewById(R.id.taskTitle);
 			editText.setText(aTask.title);
-			
+
 			editText = (EditText)findViewById(R.id.taskAssignee);
 			editText.setText(aTask.assignee);
 
 			editText = (EditText)findViewById(R.id.taskCategory);
 			editText.setText(aTask.category);
-			
+
 			editText = (EditText)findViewById(R.id.taskDescription);
 			editText.setText(aTask.description);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	/**
@@ -79,4 +82,16 @@ public class ChangeActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	public void onClick(View view){
+		switch (view.getId()){
+		case R.id.saveTask:
+			TaskModel aTask = new TaskModel(((EditText)findViewById(R.id.taskTitle)).getText().toString(), ((EditText)findViewById(R.id.taskCategory)).getText().toString(),
+					((EditText)findViewById(R.id.taskAssignee)).getText().toString(), ((EditText)findViewById(R.id.taskDescription)).getText().toString());
+			taskSource.changeTask(rowID, aTask);
+		case R.id.discardTask:
+			taskSource.close();
+			finish();
+			break;
+		}
+	}
 }

@@ -96,7 +96,7 @@
             android:layout_marginRight="18dp"
             android:layout_marginTop="22dp"
             android:onClick="onClick"
-            android:text="@string/addTask"
+            android:text="@string/saveTask"
             style="?android:attr/buttonBarButtonStyle" />
 
         <Button

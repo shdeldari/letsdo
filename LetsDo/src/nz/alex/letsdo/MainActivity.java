@@ -57,6 +57,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume(){
 		super.onResume();
+		taskSource.open();
 		values = new ArrayList<TaskModel>(taskSource.getAllTasks().values());
 		keys = new ArrayList<Integer>(taskSource.getAllTasks().keySet());
 		// use the SimpleCursorAdapter to show the

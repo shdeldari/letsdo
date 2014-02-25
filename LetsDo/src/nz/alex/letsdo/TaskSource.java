@@ -51,7 +51,7 @@ public class TaskSource {
 		database.insert(SQLiteHelper.TABLE_TASKS, null, values);
 	}
 
-	public void changeTask(Integer rowID, TaskModel aTask){
+	public void changeTask(String rowID, TaskModel aTask){
 		ContentValues values = new ContentValues();
 		values.put(dbHelper.COLUMN_TITLE, aTask.title);
 		values.put(dbHelper.COLUMN_CATEGORY, aTask.category);

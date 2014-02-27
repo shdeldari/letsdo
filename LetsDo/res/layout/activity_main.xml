@@ -10,14 +10,20 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <Button
-        android:id="@+id/addTask"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/panel"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="18dp"
-        android:layout_marginTop="22dp"
-        android:onClick="onClick"
-        android:text="@string/addTask" />
+        android:orientation="horizontal">
+    	
+    	<Button
+        	android:id="@+id/addTask"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+       		android:layout_alignParentRight="true"
+        	android:onClick="onClick"
+        	android:text="@string/addTask" />
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/listView1"

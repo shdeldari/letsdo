@@ -38,6 +38,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="nz.alex.letsdo.MainActivity" />
         </activity>
+        <activity
+            android:name="nz.alex.letsdo.MultipleSelectorActivity"
+            android:label="@string/title_activity_change"
+            android:parentActivityName="nz.alex.letsdo.MainActivity" 
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="nz.alex.letsdo.MainActivity" />
+        </activity>
+        
     </application>
 
 </manifest>

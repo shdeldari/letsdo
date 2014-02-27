@@ -19,5 +19,6 @@
     <string name="assigneeHint">Alex</string>
     <string name="title_activity_add">Add</string>
     <string name="title_activity_change">Change</string>
+    <string name="delTask">Delete</string>
 
 </resources>

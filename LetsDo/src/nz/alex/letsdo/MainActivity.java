@@ -3,8 +3,10 @@ package nz.alex.letsdo;
 import java.util.ArrayList;
 import java.util.List;
 
+import nz.alex.letsdo.tools.BasicListAdapter;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
@@ -16,7 +18,8 @@ import android.widget.ListView;
 
 public class MainActivity extends Activity {
 	protected TaskSource taskSource;
-
+	protected Context context;
+	
 	protected List<TaskModel> values;
 	protected List<Integer> keys;
 
@@ -38,20 +41,12 @@ public class MainActivity extends Activity {
 			// use the SimpleCursorAdapter to show the
 			// elements in a ListView
 			list = (ListView)findViewById(R.id.listView1);
-			ArrayAdapter<TaskModel> adapter = new ArrayAdapter<TaskModel>(this,
-					android.R.layout.simple_list_item_1, values);
+			BasicListAdapter adapter = new BasicListAdapter(this, R.layout.list_item, values, false);
 			list.setAdapter(adapter);
-			list.setOnItemClickListener(new OnItemClickListener(){
-				@Override public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-					taskSource.close();
-
-					Intent intent = new Intent(getApplicationContext(), ChangeActivity.class);
-					intent.putExtra(EXTRA_MESSAGE, keys.get(position).toString());
-					startActivityForResult(intent, ADD_REQ);
-				}
-			});
+			list.setOnItemClickListener(itemClickListener);
 			list.setOnItemLongClickListener(itemLongClickListener);
 		}
+		this.context = this.getApplicationContext();
 	}
 	
 	@Override
@@ -62,9 +57,7 @@ public class MainActivity extends Activity {
 		keys = new ArrayList<Integer>(taskSource.getAllTasks().keySet());
 		// use the SimpleCursorAdapter to show the
 		// elements in a ListView
-		
-		ArrayAdapter<TaskModel> adapter = new ArrayAdapter<TaskModel>(this,
-				android.R.layout.simple_list_item_1, values);
+		BasicListAdapter adapter = new BasicListAdapter(this,R.layout.list_item, values, false);
 		list.setAdapter(adapter);
 		list.refreshDrawableState();
 	}
@@ -92,15 +85,26 @@ public class MainActivity extends Activity {
 		startActivity(intent);
 	} 
 	
+	public OnItemClickListener itemClickListener = new OnItemClickListener() {
+		@Override public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+			taskSource.close();
+
+			Intent intent = new Intent(getApplicationContext(), ChangeActivity.class);
+			intent.putExtra(EXTRA_MESSAGE, keys.get(position).toString());
+			startActivityForResult(intent, ADD_REQ);
+		}
+	};
 	public OnItemLongClickListener itemLongClickListener = new OnItemLongClickListener() {
 
 		@Override
 		public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 				int arg2, long arg3) {
 			System.out.println("multiple selection");
-//			Intent intent = new Intent(this, MultipleSelectorActivity.class);
-//			startActivities(intent);
-			return false;
+			Intent intent = new Intent(context, MultipleSelectorActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+			startActivity(intent);
+			return true;
 		}
 	};
 		

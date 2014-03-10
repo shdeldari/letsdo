@@ -10,21 +10,25 @@ public class TaskModel {
 										dateDue;
 	protected TaskStatus status;
 	
+	public TaskModel(String tTitle, String tCategory, String tAssignee, String tDescription, String tDateDue, TaskStatus tStatus){
+		setTask(tTitle, tCategory, tAssignee, tDescription, tDateDue, tStatus);
+	}
+
 	public TaskModel(String tTitle, String tCategory, String tAssignee, String tDescription, String tDateDue){
-		setTask(tTitle, tCategory, tAssignee, tDescription, tDateDue);
+		setTask(tTitle, tCategory, tAssignee, tDescription, tDateDue, TaskStatus.OPENED);
 	}
 
 	public TaskModel(String tTitle, String tCategory, String tAssignee, String tDescription){
-		setTask(tTitle, tCategory, tAssignee, tDescription, null);
+		setTask(tTitle, tCategory, tAssignee, tDescription, null, TaskStatus.OPENED);
 	}
 
-	public void setTask(String tTitle, String tCategory, String tAssignee, String tDescription, String tDateDue){
+	public void setTask(String tTitle, String tCategory, String tAssignee, String tDescription, String tDateDue, TaskStatus tStatus){
 		title = tTitle;
 		category = tCategory;
 		assignee = tAssignee;
 		description = tDescription;
 		dateDue = tDateDue;
-		status = TaskStatus.OPENED;
+		status = tStatus;
 	}
 	
 	public String toString(){
@@ -41,5 +45,9 @@ public class TaskModel {
 
 	public TaskStatus getStatus(){
 		return status;
+	}
+
+	public void setStatus(TaskStatus aStatus){
+		status = aStatus;
 	}
 }

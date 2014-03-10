@@ -11,6 +11,7 @@
     <string name="taskDateDue">Due_To</string>
     <string name="taskDateCreated">Created_On</string>
     <string name="taskDateModified">Modified_On</string>
+    <string name="taskStatus">Status</string>
     <string name="addTask">Add</string>
     <string name="saveTask">Save</string>
     <string name="discardTask">Discard</string>

@@ -18,12 +18,13 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	public final String COLUMN_DATEDUE;
 	public final String COLUMN_DATECREATED;
 	public final String COLUMN_DATEMODIFIED;
+	public final String COLUMN_STATUS;
 	
 	public String[] allColumns;
 
 	public SQLiteHelper(Context aContext) {
 		super(aContext, DATABASE_NAME, null, DATABASE_VERSION);
-		allColumns = new String[8];
+		allColumns = new String[9];
 		allColumns[0] = COLUMN_ID;
 		allColumns[1] = COLUMN_TITLE = aContext.getString(R.string.taskTitle);
 		allColumns[2] = COLUMN_CATEGORY = aContext.getString(R.string.taskCategory);
@@ -32,6 +33,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		allColumns[5] = COLUMN_DATEDUE = aContext.getString(R.string.taskDateDue);
 		allColumns[6] = COLUMN_DATECREATED = aContext.getString(R.string.taskDateCreated);
 		allColumns[7] = COLUMN_DATEMODIFIED = aContext.getString(R.string.taskDateModified);
+		allColumns[8] = COLUMN_STATUS = aContext.getString(R.string.taskStatus);
 	}
 	
 	@Override
@@ -44,7 +46,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 				+ COLUMN_ASSIGNEE + " text not null, " 
 				+ COLUMN_DESCRIPTION + " text, "
 				+ COLUMN_DATEDUE + " text, "
-	
+				+ COLUMN_STATUS + " integer, "
+				
 				+ COLUMN_DATECREATED + " text not null, "
 				+ COLUMN_DATEMODIFIED + " text not null);";
 

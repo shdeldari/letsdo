@@ -44,6 +44,7 @@ public class TaskSource {
 		values.put(dbHelper.COLUMN_ASSIGNEE, aTask.assignee);
 		values.put(dbHelper.COLUMN_DESCRIPTION, aTask.description);
 		values.put(dbHelper.COLUMN_DATEDUE, aTask.dateDue);
+		values.put(dbHelper.COLUMN_STATUS, aTask.status.ordinal());
 
 		values.put(dbHelper.COLUMN_DATECREATED, dateFormat.format(new Date()));
 		values.put(dbHelper.COLUMN_DATEMODIFIED, dateFormat.format(new Date()));
@@ -58,6 +59,7 @@ public class TaskSource {
 		values.put(dbHelper.COLUMN_ASSIGNEE, aTask.assignee);
 		values.put(dbHelper.COLUMN_DESCRIPTION, aTask.description);
 		values.put(dbHelper.COLUMN_DATEDUE, aTask.dateDue);
+		values.put(dbHelper.COLUMN_STATUS, aTask.status.ordinal());
 		
 		values.put(dbHelper.COLUMN_DATEMODIFIED, dateFormat.format(new Date()));
 		
@@ -76,7 +78,7 @@ public class TaskSource {
 		if (cursor.getCount() <= 0)
 			throw new Exception("Task not found!");
 		cursor.moveToFirst();
-		return new TaskModel(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4));
+		return new TaskModel(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), null, TaskStatus.valueOf(cursor.getString(6)));
 	}
 	
 	public Hashtable<Integer, TaskModel> getTasksOrderedBy(String column){
@@ -99,7 +101,7 @@ public class TaskSource {
 	}
 	
 	private TaskModel cursorToTask(Cursor cursor){
-		TaskModel task = new TaskModel(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5));
+		TaskModel task = new TaskModel(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), TaskStatus.valueOf(cursor.getString(6)));
 		return task;
 	}
 	

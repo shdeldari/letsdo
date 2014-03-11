@@ -2,14 +2,18 @@ package nz.alex.letsdo;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import android.os.Bundle;
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends Activity {
 
 	private TaskSource taskSource;
 
@@ -17,7 +21,7 @@ public class MainActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
 		taskSource = new TaskSource(this);
 		taskSource.open();
 
@@ -26,9 +30,10 @@ public class MainActivity extends ListActivity {
 
 			// use the SimpleCursorAdapter to show the
 			// elements in a ListView
+			ListView list = (ListView)findViewById(R.id.listView1);
 			ArrayAdapter<TaskModel> adapter = new ArrayAdapter<TaskModel>(this,
 					android.R.layout.simple_list_item_1, values);
-			setListAdapter(adapter);	
+			list.setAdapter(adapter);	
 		}
 	}
 

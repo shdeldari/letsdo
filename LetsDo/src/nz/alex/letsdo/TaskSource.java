@@ -18,12 +18,13 @@ public class TaskSource {
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()); 
 
 	public TaskSource(Context context) {
-		// TODO Auto-generated constructor stub
 		dbHelper = new SQLiteHelper(context);
 	}
 
 	public void open() throws SQLException {
+		System.out.println("before opening DB");
 		database = dbHelper.getWritableDatabase();
+		System.out.println("after opening DB");
 	}
 
 	public void close() {

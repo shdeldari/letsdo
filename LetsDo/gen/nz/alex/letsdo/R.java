@@ -25,18 +25,21 @@ public final class R {
     }
     public static final class id {
         public static final int LinearLayout1=0x7f08000b;
-        public static final int action_settings=0x7f080010;
+        public static final int action_settings=0x7f080013;
         public static final int addTask=0x7f080008;
+        public static final int chkBox=0x7f08000f;
         public static final int discardTask=0x7f08000a;
         public static final int listView1=0x7f08000d;
-        public static final int listView2=0x7f08000f;
+        public static final int listView2=0x7f080012;
+        public static final int list_item=0x7f08000e;
         public static final int panel=0x7f08000c;
         public static final int saveTask=0x7f080009;
-        public static final int selectAll=0x7f08000e;
+        public static final int selectAll=0x7f080011;
         public static final int taskAssignee=0x7f080005;
         public static final int taskCategory=0x7f080003;
         public static final int taskDescription=0x7f080007;
         public static final int taskTitle=0x7f080001;
+        public static final int taskTxt=0x7f080010;
         public static final int textAssignee=0x7f080004;
         public static final int textCategory=0x7f080002;
         public static final int textDescription=0x7f080006;
@@ -46,7 +49,8 @@ public final class R {
         public static final int activity_add=0x7f030000;
         public static final int activity_change=0x7f030001;
         public static final int activity_main=0x7f030002;
-        public static final int multiple_selection=0x7f030003;
+        public static final int list_item=0x7f030003;
+        public static final int multiple_selection=0x7f030004;
     }
     public static final class menu {
         public static final int add=0x7f070000;

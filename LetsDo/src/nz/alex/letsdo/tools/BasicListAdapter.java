@@ -1,18 +1,12 @@
 package nz.alex.letsdo.tools;
 
 import java.util.List;
-
 import nz.alex.letsdo.R;
 import nz.alex.letsdo.TaskModel;
-import android.R.anim;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;

@@ -44,7 +44,7 @@ public class TaskSource {
 		values.put(dbHelper.COLUMN_ASSIGNEE, aTask.assignee);
 		values.put(dbHelper.COLUMN_DESCRIPTION, aTask.description);
 		values.put(dbHelper.COLUMN_DATEDUE, aTask.dateDue);
-		values.put(dbHelper.COLUMN_STATUS, aTask.status.ordinal());
+		values.put(dbHelper.COLUMN_STATUS, aTask.status.name());
 
 		values.put(dbHelper.COLUMN_DATECREATED, dateFormat.format(new Date()));
 		values.put(dbHelper.COLUMN_DATEMODIFIED, dateFormat.format(new Date()));
@@ -59,7 +59,7 @@ public class TaskSource {
 		values.put(dbHelper.COLUMN_ASSIGNEE, aTask.assignee);
 		values.put(dbHelper.COLUMN_DESCRIPTION, aTask.description);
 		values.put(dbHelper.COLUMN_DATEDUE, aTask.dateDue);
-		values.put(dbHelper.COLUMN_STATUS, aTask.status.ordinal());
+		values.put(dbHelper.COLUMN_STATUS, aTask.status.name());
 		
 		values.put(dbHelper.COLUMN_DATEMODIFIED, dateFormat.format(new Date()));
 		

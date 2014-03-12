@@ -16,9 +16,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	public final String COLUMN_ASSIGNEE;
 	public final String COLUMN_DESCRIPTION;
 	public final String COLUMN_DATEDUE;
+	public final String COLUMN_STATUS;
+
 	public final String COLUMN_DATECREATED;
 	public final String COLUMN_DATEMODIFIED;
-	public final String COLUMN_STATUS;
 	
 	public String[] allColumns;
 
@@ -31,9 +32,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		allColumns[3] = COLUMN_ASSIGNEE = aContext.getString(R.string.taskAssignee);
 		allColumns[4] = COLUMN_DESCRIPTION = aContext.getString(R.string.taskDescription);
 		allColumns[5] = COLUMN_DATEDUE = aContext.getString(R.string.taskDateDue);
-		allColumns[6] = COLUMN_DATECREATED = aContext.getString(R.string.taskDateCreated);
-		allColumns[7] = COLUMN_DATEMODIFIED = aContext.getString(R.string.taskDateModified);
-		allColumns[8] = COLUMN_STATUS = aContext.getString(R.string.taskStatus);
+		allColumns[6] = COLUMN_STATUS = aContext.getString(R.string.taskStatus);
+
+		allColumns[7] = COLUMN_DATECREATED = aContext.getString(R.string.taskDateCreated);
+		allColumns[8] = COLUMN_DATEMODIFIED = aContext.getString(R.string.taskDateModified);
 	}
 	
 	@Override
@@ -46,7 +48,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 				+ COLUMN_ASSIGNEE + " text not null, " 
 				+ COLUMN_DESCRIPTION + " text, "
 				+ COLUMN_DATEDUE + " text, "
-				+ COLUMN_STATUS + " integer, "
+				+ COLUMN_STATUS + " text not null, "
 				
 				+ COLUMN_DATECREATED + " text not null, "
 				+ COLUMN_DATEMODIFIED + " text not null);";

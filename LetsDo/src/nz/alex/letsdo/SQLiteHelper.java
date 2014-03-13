@@ -5,63 +5,59 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+enum TaskColumns{
+	ID, TITLE, CATEGORY, ASSIGNEE, DESCRIPTION, DATEDUE, DATECREATED, DATEMODIFIED, STATUS;
+}
+
 public class SQLiteHelper extends SQLiteOpenHelper {
 	public static final String TABLE_TASKS = "tasks";
 	private static final String DATABASE_NAME = "letsdotasks.db";
 	private static final int DATABASE_VERSION = 1;
-	
-	public final String COLUMN_ID = "_id";
-	public final String COLUMN_TITLE;
-	public final String COLUMN_CATEGORY;
-	public final String COLUMN_ASSIGNEE;
-	public final String COLUMN_DESCRIPTION;
-	public final String COLUMN_DATEDUE;
-	public final String COLUMN_STATUS;
 
-	public final String COLUMN_DATECREATED;
-	public final String COLUMN_DATEMODIFIED;
-	
 	public String[] allColumns;
 
 	public SQLiteHelper(Context aContext) {
 		super(aContext, DATABASE_NAME, null, DATABASE_VERSION);
-		allColumns = new String[9];
-		allColumns[0] = COLUMN_ID;
-		allColumns[1] = COLUMN_TITLE = aContext.getString(R.string.taskTitle);
-		allColumns[2] = COLUMN_CATEGORY = aContext.getString(R.string.taskCategory);
-		allColumns[3] = COLUMN_ASSIGNEE = aContext.getString(R.string.taskAssignee);
-		allColumns[4] = COLUMN_DESCRIPTION = aContext.getString(R.string.taskDescription);
-		allColumns[5] = COLUMN_DATEDUE = aContext.getString(R.string.taskDateDue);
-		allColumns[6] = COLUMN_STATUS = aContext.getString(R.string.taskStatus);
 
-		allColumns[7] = COLUMN_DATECREATED = aContext.getString(R.string.taskDateCreated);
-		allColumns[8] = COLUMN_DATEMODIFIED = aContext.getString(R.string.taskDateModified);
+		allColumns = new String[TaskColumns.values().length];
+
+		for (TaskColumns column: TaskColumns.values()){
+			allColumns[column.ordinal()] = column.name();
+		}
 	}
-	
+
 	@Override
 	public void onCreate(SQLiteDatabase database) {
 		// Database creation sql statement
-		String DATABASE_CREATE = "create table " + TABLE_TASKS + "(" 
-				+ COLUMN_ID	+ " integer primary key autoincrement, " 
-				+ COLUMN_TITLE + " text not null, " 
-				+ COLUMN_CATEGORY + " text not null, " 
-				+ COLUMN_ASSIGNEE + " text not null, " 
-				+ COLUMN_DESCRIPTION + " text, "
-				+ COLUMN_DATEDUE + " text, "
-				+ COLUMN_STATUS + " text not null, "
-				
-				+ COLUMN_DATECREATED + " text not null, "
-				+ COLUMN_DATEMODIFIED + " text not null);";
+		String DATABASE_CREATE = "create table " + TABLE_TASKS + "(";
+		for (TaskColumns column: TaskColumns.values()){
+			DATABASE_CREATE += column.name();
+			switch (column){
+			case ID:
+				DATABASE_CREATE += " integer primary key autoincrement";
+				break;
+			case DESCRIPTION:
+			case DATEDUE:
+				DATABASE_CREATE += " text";
+				break;
+			default:
+				DATABASE_CREATE += " text not null";	
+			}
+			if (column.ordinal() < TaskColumns.values().length - 1)
+				DATABASE_CREATE += ", ";
+		}
+		
+		DATABASE_CREATE += ");";
 
 		database.execSQL(DATABASE_CREATE);
 	}
-	
+
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Log.w(SQLiteHelper.class.getName(),
-		"Upgrading database from version " + oldVersion + " to "
-		+ newVersion + ", which will destroy all old data");
+				"Upgrading database from version " + oldVersion + " to "
+						+ newVersion + ", which will destroy all old data");
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASKS);
-	    onCreate(db);
+		onCreate(db);
 	}
 }

@@ -1,32 +1,34 @@
-package nz.alex.letsdo.tools;
+package nz.alex.letsdo;	
 
 import java.util.List;
 import nz.alex.letsdo.R;
 import nz.alex.letsdo.TaskModel;
+import nz.alex.letsdo.TaskStatus;
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-public class BasicListAdapter extends BaseAdapter{
+public class BasicListAdapter extends ArrayAdapter<TaskModel>{
 	private LayoutInflater mInflater;
 	List<TaskModel> values;
-	boolean selector;
+	protected String activityName;
 	
-	public BasicListAdapter(Context context, int resource, List<TaskModel> values, boolean selector) {
-		super();
+	public BasicListAdapter(Context context, int resource, List<TaskModel> values) {
+		super(context, resource, values);
 		mInflater = LayoutInflater.from(context);
         this.values = values;
-        this.selector = selector;
+        activityName = context.getClass().getSimpleName();
 	}
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		System.out.println("getView");
-		// A ViewHolder keeps references to children views to avoid unneccessary calls
+		// A ViewHolder keeps references to children views to avoid unnecessary calls
         // to findViewById() on each row.
 		ViewHolder holder = new ViewHolder();
         // When convertView is not null, we can reuse it directly, there is no need
@@ -43,7 +45,14 @@ public class BasicListAdapter extends BaseAdapter{
             holder = (ViewHolder) convertView.getTag();
         }
         holder.text.setText(values.get(position).toString());
-        if(selector) holder.chkbox.setVisibility(0);	else holder.chkbox.setVisibility(4);
+        if (values.get(position).getStatus() == TaskStatus.CLOSED)
+        	holder.text.setPaintFlags(holder.text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        else
+        	holder.text.setPaintFlags(holder.text.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+        if(activityName.equals("MainActivity")) 
+        	holder.chkbox.setVisibility(View.INVISIBLE);	
+        else 
+        	holder.chkbox.setVisibility(View.VISIBLE);
         return convertView;
 	}
 
@@ -58,8 +67,8 @@ public class BasicListAdapter extends BaseAdapter{
 	}
 
 	@Override
-	public Object getItem(int arg0) {
-		return values.get(arg0).toString();
+	public TaskModel getItem(int arg0) {
+		return values.get(arg0);
 	}
 
 	@Override

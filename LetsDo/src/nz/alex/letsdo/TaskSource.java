@@ -68,8 +68,31 @@ public class TaskSource {
 		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
 	}
 
-	public void deleteTask(TaskModel aTask){
+	public void closeTask(String rowID){
+		ContentValues values = new ContentValues();
+		values.put(TaskColumns.STATUS.name(), TaskStatus.CLOSED.name());
+		
+		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
+		
+		String where = TaskColumns.ID.name() + " = " + rowID;
+		
+		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
+	}
 
+	public void openTask(String rowID){
+		ContentValues values = new ContentValues();
+		values.put(TaskColumns.STATUS.name(), TaskStatus.OPENED.name());
+		
+		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
+		
+		String where = TaskColumns.ID.name() + " = " + rowID;
+		
+		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
+	}
+
+	public void deleteTask(String rowID){
+		String where = TaskColumns.ID.name() + " = " + rowID;
+		database.delete(SQLiteHelper.TABLE_TASKS, where, null);
 	}
 
 	public TaskModel findTask(String rowID) throws Exception{
@@ -102,7 +125,7 @@ public class TaskSource {
 	}
 	
 	public Hashtable<Integer, TaskModel> getAllTasks(){
-		return getTasksOrderedBy(TaskColumns.DATEMODIFIED.name());	
+		return getTasksOrderedBy(TaskColumns.DATECREATED.name());	
 	}
 	
 	private TaskModel cursorToTask(Cursor cursor){

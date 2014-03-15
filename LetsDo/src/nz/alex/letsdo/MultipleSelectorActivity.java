@@ -2,8 +2,6 @@ package nz.alex.letsdo;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import nz.alex.letsdo.tools.BasicListAdapter;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -32,10 +30,9 @@ public class MultipleSelectorActivity extends Activity{
 			// use the SimpleCursorAdapter to show the
 			// elements in a ListView
 			ListView list = (ListView)findViewById(R.id.listView2);
-			BasicListAdapter adapter = new BasicListAdapter(this, R.layout.list_item, values, true);
+			BasicListAdapter adapter = new BasicListAdapter(this, R.layout.list_item, values);
 			list.setAdapter(adapter);
 			
 		}
 	}
-
 }

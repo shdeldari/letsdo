@@ -18,6 +18,11 @@ public class BasicListAdapter extends ArrayAdapter<TaskModel>{
 	List<TaskModel> values;
 	protected String activityName;
 	
+	static class ViewHolder {    	
+        TextView text;
+        CheckBox chkbox;
+    }
+
 	public BasicListAdapter(Context context, int resource, List<TaskModel> values) {
 		super(context, resource, values);
 		mInflater = LayoutInflater.from(context);
@@ -27,11 +32,11 @@ public class BasicListAdapter extends ArrayAdapter<TaskModel>{
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		System.out.println("getView");
 		// A ViewHolder keeps references to children views to avoid unnecessary calls
         // to findViewById() on each row.
 		ViewHolder holder = new ViewHolder();
-        // When convertView is not null, we can reuse it directly, there is no need
+
+		// When convertView is not null, we can reuse it directly, there is no need
         // to reinflate it. We only inflate a new View when the convertView supplied
         // by ListView is null.
         if (convertView == null) {
@@ -44,22 +49,20 @@ public class BasicListAdapter extends ArrayAdapter<TaskModel>{
             // and the ImageView.
             holder = (ViewHolder) convertView.getTag();
         }
+        
         holder.text.setText(values.get(position).toString());
         if (values.get(position).getStatus() == TaskStatus.CLOSED)
         	holder.text.setPaintFlags(holder.text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         else
         	holder.text.setPaintFlags(holder.text.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+        
         if(activityName.equals("MainActivity")) 
         	holder.chkbox.setVisibility(View.INVISIBLE);	
         else 
         	holder.chkbox.setVisibility(View.VISIBLE);
+        
         return convertView;
 	}
-
-	static class ViewHolder {    	
-        TextView text;
-        CheckBox chkbox;
-    }
 
 	@Override
 	public int getCount() {
@@ -69,11 +72,5 @@ public class BasicListAdapter extends ArrayAdapter<TaskModel>{
 	@Override
 	public TaskModel getItem(int arg0) {
 		return values.get(arg0);
-	}
-
-	@Override
-	public long getItemId(int arg0) {
-		
-		return 0;
 	}
 }

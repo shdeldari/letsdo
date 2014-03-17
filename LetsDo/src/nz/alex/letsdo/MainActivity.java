@@ -15,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	protected TaskSource taskSource;
@@ -26,6 +25,8 @@ public class MainActivity extends Activity {
 
 	public final static String EXTRA_MESSAGE = "nz.alex.letsdo.MESSAGE";
 	protected ListView list;
+
+	BasicListAdapter adapter;
 
 	private static final int SWIPE_MIN_DISTANCE = 120;
 	private static final int SWIPE_MAX_OFF_PATH = 250;
@@ -39,17 +40,11 @@ public class MainActivity extends Activity {
 			try {
 				if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
 					return false;
-				String toast;
 				// right to left swipe
-				int position = list.pointToPosition((int)e1.getX(), (int) e1.getY());
 				if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-					toast = "Left Swipe: " + position;
-					Toast.makeText(MainActivity.this, toast, Toast.LENGTH_SHORT).show();
-					taskSource.openTask(keys.get(position).toString());
+					OnListSwipeLeft((int)e1.getX(), (int) e1.getY());
 				}  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-					toast = "Right Swipe: " + position;
-					Toast.makeText(MainActivity.this, toast, Toast.LENGTH_SHORT).show();
-					taskSource.closeTask(keys.get(position).toString());
+					OnListSwipeRight((int)e1.getX(), (int) e1.getY());
 				}
 			} catch (Exception e) {
 				// nothing
@@ -77,12 +72,10 @@ public class MainActivity extends Activity {
 			}
 		};
 
-		// use the SimpleCursorAdapter to show the
-		// elements in a ListView
 		list = (ListView)findViewById(R.id.listView1);
 		BasicListAdapter adapter = new BasicListAdapter(this, R.layout.list_item, values);
 		list.setAdapter(adapter);
-		//    	list.setOnItemClickListener(itemClickListener);
+		list.setOnItemClickListener(itemClickListener);
 		list.setOnItemLongClickListener(itemLongClickListener);
 		list.setOnTouchListener(gestureListener);
 	}
@@ -96,11 +89,8 @@ public class MainActivity extends Activity {
 		values = new ArrayList<TaskModel>(taskSource.getAllTasks().values());
 		keys = new ArrayList<Integer>(taskSource.getAllTasks().keySet());
 
-		// use the SimpleCursorAdapter to show the
-		// elements in a ListView
 		BasicListAdapter adapter = new BasicListAdapter(this,R.layout.list_item, values);
 		list.setAdapter(adapter);
-		//		list.refreshDrawableState();
 	}
 
 	@Override
@@ -133,8 +123,6 @@ public class MainActivity extends Activity {
 			Intent intent = new Intent(getApplicationContext(), ChangeActivity.class);
 			intent.putExtra(EXTRA_MESSAGE, keys.get(position).toString());
 			startActivity(intent);
-
-			//			taskSource.deleteTask(keys.get(position).toString());
 		}
 	};
 
@@ -150,5 +138,25 @@ public class MainActivity extends Activity {
 			startActivity(intent);
 			return true;
 		}
-	};	
+	};
+
+	protected void OnListSwipeLeft(int x, int y){
+		int position = list.pointToPosition(x, y);
+
+		values.get(position).setStatus(TaskStatus.OPENED);
+		taskSource.openTask(keys.get(position).toString());
+
+		adapter = (BasicListAdapter) list.getAdapter();
+		adapter.notifyDataSetChanged();		
+	}
+
+	protected void OnListSwipeRight(int x, int y){
+		int position = list.pointToPosition(x, y);
+
+		values.get(position).setStatus(TaskStatus.CLOSED);
+		taskSource.closeTask(keys.get(position).toString());
+
+		adapter = (BasicListAdapter) list.getAdapter();
+		adapter.notifyDataSetChanged();
+	}
 }

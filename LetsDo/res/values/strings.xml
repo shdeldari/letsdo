@@ -21,6 +21,7 @@
     <string name="title_activity_add">Add</string>
     <string name="title_activity_change">Change</string>
     <string name="title_activity_select">Select</string>
+    <string name="selectAll">All</string>
     <string name="delTask">Delete</string>
 
 </resources>

@@ -63,10 +63,11 @@ public final class R {
         public static final int app_name=0x7f050000;
         public static final int assigneeHint=0x7f050010;
         public static final int categoryHint=0x7f05000f;
-        public static final int delTask=0x7f050014;
+        public static final int delTask=0x7f050015;
         public static final int discardTask=0x7f05000d;
         public static final int hello_world=0x7f050002;
         public static final int saveTask=0x7f05000c;
+        public static final int selectAll=0x7f050014;
         public static final int taskAssignee=0x7f050004;
         public static final int taskCategory=0x7f050005;
         public static final int taskDateCreated=0x7f050008;

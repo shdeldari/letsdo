@@ -69,6 +69,7 @@ public class AddActivity extends Activity {
 
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();	
+		this.setResult(1);
 		finish();
 	}
 	

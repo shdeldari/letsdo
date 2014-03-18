@@ -20,6 +20,8 @@ public class MainActivity extends Activity {
 
 	public final static String EXTRA_MESSAGE = "nz.alex.letsdo.MESSAGE";
 	protected ListView list;
+	protected int ADD_REQ = 1;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,7 +45,7 @@ public class MainActivity extends Activity {
 
 					Intent intent = new Intent(getApplicationContext(), ChangeActivity.class);
 					intent.putExtra(EXTRA_MESSAGE, keys.get(position).toString());
-					startActivity(intent);
+					startActivityForResult(intent, ADD_REQ);
 				}
 			});
 		}
@@ -52,8 +54,24 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume(){
 		super.onResume();
-		System.out.println("back to main page");
+		values = new ArrayList<TaskModel>(taskSource.getAllTasks().values());
+		keys = new ArrayList<Integer>(taskSource.getAllTasks().keySet());
+		// use the SimpleCursorAdapter to show the
+		// elements in a ListView
+		
+		ArrayAdapter<TaskModel> adapter = new ArrayAdapter<TaskModel>(this,
+				android.R.layout.simple_list_item_1, values);
+		list.setAdapter(adapter);
 		list.refreshDrawableState();
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data){
+		System.out.println("back to main page2");
+		list.refreshDrawableState();
+//		this.historyProfs = this.db.getHistory(-1);
+//	    this.listAdapter.setData(this.historyProfs);
+//	    this.listAdapter.notifyDataSetChanged();
 	}
 
 	@Override

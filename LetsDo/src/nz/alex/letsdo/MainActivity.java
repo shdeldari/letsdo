@@ -19,7 +19,7 @@ public class MainActivity extends Activity {
 	protected List<Integer> keys;
 
 	public final static String EXTRA_MESSAGE = "nz.alex.letsdo.MESSAGE";
-
+	protected ListView list;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
 			keys = new ArrayList<Integer>(taskSource.getAllTasks().keySet());
 			// use the SimpleCursorAdapter to show the
 			// elements in a ListView
-			ListView list = (ListView)findViewById(R.id.listView1);
+			list = (ListView)findViewById(R.id.listView1);
 			ArrayAdapter<TaskModel> adapter = new ArrayAdapter<TaskModel>(this,
 					android.R.layout.simple_list_item_1, values);
 			list.setAdapter(adapter);
@@ -47,6 +47,13 @@ public class MainActivity extends Activity {
 				}
 			});
 		}
+	}
+	
+	@Override
+	protected void onResume(){
+		super.onResume();
+		System.out.println("back to main page");
+		list.refreshDrawableState();
 	}
 
 	@Override

@@ -24,22 +24,23 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int LinearLayout1=0x7f08000b;
-        public static final int action_settings=0x7f080013;
+        public static final int LinearLayout1=0x7f08000c;
+        public static final int action_settings=0x7f080014;
         public static final int addTask=0x7f080008;
-        public static final int chkBox=0x7f08000f;
+        public static final int chkBox=0x7f080010;
+        public static final int delTask=0x7f08000b;
         public static final int discardTask=0x7f08000a;
-        public static final int listView1=0x7f08000d;
-        public static final int listView2=0x7f080012;
-        public static final int list_item=0x7f08000e;
-        public static final int panel=0x7f08000c;
+        public static final int listView1=0x7f08000e;
+        public static final int listView2=0x7f080013;
+        public static final int list_item=0x7f08000f;
+        public static final int panel=0x7f08000d;
         public static final int saveTask=0x7f080009;
-        public static final int selectAll=0x7f080011;
+        public static final int selectAll=0x7f080012;
         public static final int taskAssignee=0x7f080005;
         public static final int taskCategory=0x7f080003;
         public static final int taskDescription=0x7f080007;
         public static final int taskTitle=0x7f080001;
-        public static final int taskTxt=0x7f080010;
+        public static final int taskTxt=0x7f080011;
         public static final int textAssignee=0x7f080004;
         public static final int textCategory=0x7f080002;
         public static final int textDescription=0x7f080006;

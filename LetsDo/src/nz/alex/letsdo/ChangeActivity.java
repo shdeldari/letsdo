@@ -88,10 +88,14 @@ public class ChangeActivity extends Activity {
 			TaskModel aTask = new TaskModel(((EditText)findViewById(R.id.taskTitle)).getText().toString(), ((EditText)findViewById(R.id.taskCategory)).getText().toString(),
 					((EditText)findViewById(R.id.taskAssignee)).getText().toString(), ((EditText)findViewById(R.id.taskDescription)).getText().toString());
 			taskSource.changeTask(rowID, aTask);
-		case R.id.discardTask:
-			taskSource.close();
-			finish();
 			break;
+		case R.id.delTask:
+			taskSource.deleteTask(rowID);
+			break;
+		case R.id.discardTask:
+			// do nothing
 		}
+		taskSource.close();
+		finish();
 	}
 }

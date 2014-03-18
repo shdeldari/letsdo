@@ -84,30 +84,40 @@
         android:inputType="textMultiLine" />
 
     <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" 
-        style="?android:attr/buttonBarStyle" >
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/saveTask"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="18dp"
             android:layout_marginTop="22dp"
             android:onClick="onClick"
-            android:text="@string/saveTask"
-            style="?android:attr/buttonBarButtonStyle" />
+            android:text="@string/saveTask" />
 
         <Button
             android:id="@+id/discardTask"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="18dp"
             android:layout_marginTop="22dp"
             android:onClick="onClick"
-            android:text="@string/discardTask" 
-            style="?android:attr/buttonBarButtonStyle" />
+            android:text="@string/discardTask" />
+
+        <Button
+            android:id="@+id/delTask"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="18dp"
+            android:layout_marginTop="22dp"
+            android:onClick="onClick"
+            android:text="@string/delTask" />
     </LinearLayout>
 
 </LinearLayout>

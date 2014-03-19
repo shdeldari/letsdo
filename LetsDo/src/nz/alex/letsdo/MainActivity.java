@@ -73,7 +73,7 @@ public class MainActivity extends Activity {
 		};
 
 		list = (ListView)findViewById(R.id.listView1);
-		BasicListAdapter adapter = new BasicListAdapter(this, R.layout.list_item, values);
+		BasicListAdapter adapter = new BasicListAdapter(this, R.layout.list_item, values, false);
 		list.setAdapter(adapter);
 		list.setOnItemClickListener(itemClickListener);
 		list.setOnItemLongClickListener(itemLongClickListener);
@@ -89,8 +89,9 @@ public class MainActivity extends Activity {
 		values = new ArrayList<TaskModel>(taskSource.getAllTasks().values());
 		keys = new ArrayList<Integer>(taskSource.getAllTasks().keySet());
 
-		BasicListAdapter adapter = new BasicListAdapter(this,R.layout.list_item, values);
+		BasicListAdapter adapter = new BasicListAdapter(this,R.layout.list_item, values, false);
 		list.setAdapter(adapter);
+		
 	}
 
 	@Override

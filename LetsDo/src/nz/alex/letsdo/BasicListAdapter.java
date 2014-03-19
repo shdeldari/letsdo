@@ -1,6 +1,8 @@
 package nz.alex.letsdo;	
 
+import java.util.ArrayList;
 import java.util.List;
+
 import nz.alex.letsdo.R;
 import nz.alex.letsdo.TaskModel;
 import nz.alex.letsdo.TaskStatus;
@@ -16,18 +18,22 @@ import android.widget.TextView;
 public class BasicListAdapter extends ArrayAdapter<TaskModel>{
 	private LayoutInflater mInflater;
 	List<TaskModel> values;
+	ArrayList <ViewHolder> views;
 	protected String activityName;
+	boolean selector;
 	
 	static class ViewHolder {    	
         TextView text;
         CheckBox chkbox;
     }
 
-	public BasicListAdapter(Context context, int resource, List<TaskModel> values) {
+	public BasicListAdapter(Context context, int resource, List<TaskModel> values, boolean selector) {
 		super(context, resource, values);
 		mInflater = LayoutInflater.from(context);
         this.values = values;
         activityName = context.getClass().getSimpleName();
+        this.selector = selector;
+        views = new ArrayList<BasicListAdapter.ViewHolder>();
 	}
 	
 	@Override
@@ -58,9 +64,13 @@ public class BasicListAdapter extends ArrayAdapter<TaskModel>{
         
         if(activityName.equals("MainActivity")) 
         	holder.chkbox.setVisibility(View.INVISIBLE);	
-        else 
+        else {
         	holder.chkbox.setVisibility(View.VISIBLE);
-        
+        	if(selector)
+        		holder.chkbox.setChecked(true);
+        }
+        views.add(holder);
+        convertView.setTag(holder);
         return convertView;
 	}
 
@@ -72,5 +82,14 @@ public class BasicListAdapter extends ArrayAdapter<TaskModel>{
 	@Override
 	public TaskModel getItem(int arg0) {
 		return values.get(arg0);
+	}
+
+	public ArrayList<TaskModel> getSelected() {
+		ArrayList<TaskModel> selected = new ArrayList<TaskModel>();
+		for (int i = 0; i < values.size(); i++) {
+			if(views.get(i).chkbox.isChecked())
+				selected.add(getItem(i));
+		}
+		return selected;
 	}
 }

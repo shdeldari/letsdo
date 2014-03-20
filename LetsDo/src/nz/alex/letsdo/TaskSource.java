@@ -1,6 +1,7 @@
 package nz.alex.letsdo;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Locale;
@@ -93,6 +94,11 @@ public class TaskSource {
 	public void deleteTask(String rowID){
 		String where = TaskColumns.ID.name() + " = " + rowID;
 		database.delete(SQLiteHelper.TABLE_TASKS, where, null);
+	}
+
+	public void deleteTasks(ArrayList<String> rowIDList){
+		for (String rowID: rowIDList)
+			deleteTask(rowID);
 	}
 
 	public TaskModel findTask(String rowID) throws Exception{

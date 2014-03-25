@@ -6,7 +6,9 @@ import android.content.Context;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 
@@ -22,6 +24,11 @@ public class AddActivity extends Activity {
 		setupActionBar();
 		taskSource = TaskSource.GetInstance(this);
 		taskSource.open();
+		
+		Spinner spinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
+		taskSource.getColumnList();
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(AddActivity.this, android.R.layout.simple_spinner_item, taskSource.getColumnList());
+		spinnerCategory.setAdapter(adapter);
 	}
 
 	/**
@@ -58,7 +65,7 @@ public class AddActivity extends Activity {
 	}
 
 	public void onClick (View view) {
-		TaskModel aTask = new TaskModel(((EditText)findViewById(R.id.taskTitle)).getText().toString(), ((EditText)findViewById(R.id.taskCategory)).getText().toString(),
+		TaskModel aTask = new TaskModel(((EditText)findViewById(R.id.taskTitle)).getText().toString(), ((Spinner)findViewById(R.id.spinnerCategory)).getSelectedItem().toString(),
 				((EditText)findViewById(R.id.taskAssignee)).getText().toString(), ((EditText)findViewById(R.id.taskDescription)).getText().toString());
 
 		taskSource.addTask(aTask);

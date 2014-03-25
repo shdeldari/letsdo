@@ -3,8 +3,12 @@ package nz.alex.letsdo;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -134,6 +138,28 @@ public class TaskSource {
 		return getTasksOrderedBy(TaskColumns.DATECREATED.name());	
 	}
 	
+	public Set<String> getAllColumns(){
+		Set<String> columnSet = new HashSet<String>();
+		for (TaskModel task: getAllTasks().values())
+			columnSet.add(task.category);
+		return columnSet;	
+	}
+	
+	public List<String> getColumnList(){
+		Set<String> columnSet = getAllColumns();
+		List<String> columnList = new ArrayList<String>();
+		for (String category: columnSet)
+			columnList.add(category);
+		return columnList;	
+	}
+
+	public Set<String> getAllAssigness(){
+		Set<String> columnSet = new HashSet<String>();
+		for (TaskModel task: getAllTasks().values())
+			columnSet.add(task.assignee);
+		return columnSet;	
+	}
+
 	private TaskModel cursorToTask(Cursor cursor){
 		TaskModel task = new TaskModel(cursor.getString(TaskColumns.TITLE.ordinal()), 
 				cursor.getString(TaskColumns.CATEGORY.ordinal()), 

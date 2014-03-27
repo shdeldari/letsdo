@@ -14,15 +14,27 @@
         android:id="@+id/panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-    	
-    	<Button
-        	android:id="@+id/addTask"
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-       		android:layout_alignParentRight="true"
-        	android:onClick="onClick"
-        	android:text="@string/addTask" />
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/addTask"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:onClick="onClick"
+            android:text="@string/addTask" />
+<!-- 
+        <nz.alex.letsdo.tools.Switch
+            android:id="@+id/btn_on_off"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/addTask"
+            android:layout_alignBottom="@+id/addTask"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="15dp"
+            android:gravity="center_vertical" /> -->
+
     </RelativeLayout>
 
     <ListView

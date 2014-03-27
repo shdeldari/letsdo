@@ -84,11 +84,11 @@ public class BasicListAdapter extends ArrayAdapter<TaskModel>{
 		return values.get(arg0);
 	}
 
-	public ArrayList<TaskModel> getSelected() {
-		ArrayList<TaskModel> selected = new ArrayList<TaskModel>();
+	public ArrayList<Integer> getSelected() {
+		ArrayList<Integer> selected = new ArrayList<Integer>();
 		for (int i = 0; i < values.size(); i++) {
 			if(views.get(i).chkbox.isChecked())
-				selected.add(getItem(i));
+				selected.add(i);
 		}
 		return selected;
 	}

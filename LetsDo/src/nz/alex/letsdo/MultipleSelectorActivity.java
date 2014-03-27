@@ -30,12 +30,11 @@ public class MultipleSelectorActivity extends Activity{
 	}
 	
 	public void onDeleteClick(View view){
-		ArrayList<TaskModel> selectedToDelete = adapter.getSelected();
-		//TODO 
-		// need to implement an API for Delete(Task) and Delete(Collection of Tasks)
-//		for (int i = 0; i < selectedToDelete.size(); i++) {
-//			TaskSource.GetInstance(getBaseContext()).deleteTask();;
-//		}
+		ArrayList<Integer> selectedToDelete = adapter.getSelected();
+		keys = new ArrayList(taskSource.getAllTasks().keySet());
+		for (int i = 0; i < selectedToDelete.size(); i++) {
+			TaskSource.GetInstance(getBaseContext()).deleteTask((keys.get(selectedToDelete.get(i).intValue())).toString() );
+		}
 	}
 	
 	@Override

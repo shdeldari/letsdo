@@ -40,7 +40,7 @@
         </activity>
         <activity
             android:name="nz.alex.letsdo.MultipleSelectorActivity"
-            android:label="@string/title_activity_change"
+            android:label="@string/title_activity_select"
             android:parentActivityName="nz.alex.letsdo.MainActivity" 
             >
             <meta-data

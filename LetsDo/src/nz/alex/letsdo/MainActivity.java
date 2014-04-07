@@ -1,7 +1,11 @@
 package nz.alex.letsdo;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
+import nz.alex.letsdo.tools.ExpandableListAdapter;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
@@ -14,7 +18,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	protected TaskSource taskSource;
@@ -33,6 +40,13 @@ public class MainActivity extends Activity {
 	private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 	private GestureDetector gestureDetector;
 	View.OnTouchListener gestureListener;
+	
+	///-----
+	List<String> groupList;
+    List<String> childList;
+    Map<String, List<String>> laptopCollection;
+    ExpandableListView expListView;
+    //-------
 
 	class MyGestureDetector extends SimpleOnGestureListener {
 		@Override
@@ -56,8 +70,10 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		System.out.println("before");
 		setContentView(R.layout.activity_main);
-
+		System.out.println("after");
+		
 		taskSource = TaskSource.GetInstance(this);
 		taskSource.open();
 
@@ -78,6 +94,31 @@ public class MainActivity extends Activity {
 		list.setOnItemClickListener(itemClickListener);
 		list.setOnItemLongClickListener(itemLongClickListener);
 		list.setOnTouchListener(gestureListener);
+		
+		
+//		createGroupList();
+//		 
+//        createCollection();
+// 
+//        expListView = (ExpandableListView) findViewById(R.id.listView1);
+//        final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(
+//                this, groupList, laptopCollection);
+//        expListView.setAdapter(expListAdapter);
+//        expListView.setOnChildClickListener(new OnChildClickListener() {
+//        	 
+//            public boolean onChildClick(ExpandableListView parent, View v,
+//                    int groupPosition, int childPosition, long id) {
+//                final String selected = (String) expListAdapter.getChild(
+//                        groupPosition, childPosition);
+//                Toast.makeText(getBaseContext(), selected, Toast.LENGTH_LONG)
+//                        .show();
+// 
+//                return true;
+//            }
+//        });
+//        expListView.setOnItemClickListener(itemClickListener);
+//        expListView.setOnItemLongClickListener(itemLongClickListener);
+//        expListView.setOnTouchListener(gestureListener);
 	}
 
 	@Override
@@ -160,4 +201,59 @@ public class MainActivity extends Activity {
 		adapter = (BasicListAdapter) list.getAdapter();
 		adapter.notifyDataSetChanged();
 	}
+	
+    private void createGroupList() {
+        groupList = new ArrayList<String>();
+        //TODO
+        //groupList = getCategories();
+        //or
+        //groupList = getAssignees();
+        groupList.add("HP");
+        groupList.add("Dell");
+        groupList.add("Lenovo");
+        groupList.add("Sony");
+        groupList.add("HCL");
+        groupList.add("Samsung");
+    }
+ 
+    private void createCollection() {
+        // preparing laptops collection(child)
+    	//TODO
+    	//getTasks(byCategroy)
+    	//getTasks(byAssignee)
+        String[] hpModels = { "HP Pavilion G6-2014TX", "ProBook HP 4540",
+                "HP Envy 4-1025TX" };
+        String[] hclModels = { "HCL S2101", "HCL L2102", "HCL V2002" };
+        String[] lenovoModels = { "IdeaPad Z Series", "Essential G Series",
+                "ThinkPad X Series", "Ideapad Z Series" };
+        String[] sonyModels = { "VAIO E Series", "VAIO Z Series",
+                "VAIO S Series", "VAIO YB Series" };
+        String[] dellModels = { "Inspiron", "Vostro", "XPS" };
+        String[] samsungModels = { "NP Series", "Series 5", "SF Series" };
+ 
+        laptopCollection = new LinkedHashMap<String, List<String>>();
+ 
+        for (String laptop : groupList) {
+            if (laptop.equals("HP")) {
+                loadChild(hpModels);
+            } else if (laptop.equals("Dell"))
+                loadChild(dellModels);
+            else if (laptop.equals("Sony"))
+                loadChild(sonyModels);
+            else if (laptop.equals("HCL"))
+                loadChild(hclModels);
+            else if (laptop.equals("Samsung"))
+                loadChild(samsungModels);
+            else
+                loadChild(lenovoModels);
+ 
+            laptopCollection.put(laptop, childList);
+        }
+    }
+ 
+    private void loadChild(String[] laptopModels) {
+        childList = new ArrayList<String>();
+        for (String model : laptopModels)
+            childList.add(model);
+    }
 }

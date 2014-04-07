@@ -4,7 +4,6 @@ package nz.alex.letsdo;
 import java.util.ArrayList;
 import java.util.List;
 
-import nz.alex.letsdo.BasicListAdapter.ViewHolder;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -32,7 +31,7 @@ public class MultipleSelectorActivity extends Activity{
 	public void onDeleteClick(View view){
 		ArrayList<Integer> selectedToDelete = adapter.getSelected();
 		System.out.println("to delete : "+selectedToDelete.size());
-		keys = new ArrayList(taskSource.getAllTasks().keySet());
+		keys = new ArrayList<Integer>(taskSource.getAllTasks().keySet());
 		System.out.println("keys to delete : "+keys.size());
 //		for (int i = 0; i < selectedToDelete.size(); i++) {
 //			TaskSource.GetInstance(getBaseContext()).deleteTask((keys.get(selectedToDelete.get(i).intValue())).toString() );

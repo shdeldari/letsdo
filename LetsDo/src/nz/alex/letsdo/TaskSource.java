@@ -138,26 +138,34 @@ public class TaskSource {
 		return getTasksOrderedBy(TaskColumns.DATECREATED.name());	
 	}
 	
-	public Set<String> getAllColumns(){
+	private Set<String> getAllCategories(){
 		Set<String> columnSet = new HashSet<String>();
 		for (TaskModel task: getAllTasks().values())
 			columnSet.add(task.category);
 		return columnSet;	
 	}
 	
-	public List<String> getColumnList(){
-		Set<String> columnSet = getAllColumns();
+	private Set<String> getAllAssigness(){
+		Set<String> columnSet = new HashSet<String>();
+		for (TaskModel task: getAllTasks().values())
+			columnSet.add(task.assignee);
+		return columnSet;	
+	}
+
+	public List<String> getCategoryList(){
+		Set<String> columnSet = getAllCategories();
 		List<String> columnList = new ArrayList<String>();
 		for (String category: columnSet)
 			columnList.add(category);
 		return columnList;	
 	}
 
-	public Set<String> getAllAssigness(){
-		Set<String> columnSet = new HashSet<String>();
-		for (TaskModel task: getAllTasks().values())
-			columnSet.add(task.assignee);
-		return columnSet;	
+	public List<String> getAssigneeList(){
+		Set<String> columnSet = getAllAssigness();
+		List<String> columnList = new ArrayList<String>();
+		for (String assignee: columnSet)
+			columnList.add(assignee);
+		return columnList;	
 	}
 
 	private TaskModel cursorToTask(Cursor cursor){

@@ -16,9 +16,9 @@
     <string name="discardTask">Discard</string>
     <string name="titleHint">Do</string>
     <string name="categoryHint">Project A</string>
-    <string name="customCategory">Costum</string>
-    <string name="addCategory">Add</string>
-    <string name="addCategoryTitle">New Category</string>
+    <string name="customValue">Costum</string>
+    <string name="addValue">Add</string>
+    <string name="addValueTitle">New Value</string>
     <string name="assigneeHint">Alex</string>
     <string name="title_activity_add">Add</string>
     <string name="title_activity_change">Change</string>

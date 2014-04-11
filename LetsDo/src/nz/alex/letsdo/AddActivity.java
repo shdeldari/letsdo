@@ -17,10 +17,14 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 
-public class AddActivity extends Activity {
+public class AddActivity extends Activity implements OnItemSelectedListener{
 
 	private TaskSource taskSource;
-
+	
+	ArrayAdapter<String> adapterCategory;
+	ArrayAdapter<String> adapterAssignee;
+	String customValue;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,48 +34,21 @@ public class AddActivity extends Activity {
 		taskSource = TaskSource.GetInstance(this);
 		taskSource.open();
 
-		final Spinner spinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
+		customValue = getString(R.string.customValue);
 
-		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(AddActivity.this, android.R.layout.simple_spinner_item, taskSource.getColumnList());
-
-		final String customCategory = getString(R.string.customCategory);
-		adapter.add(customCategory);
-
-		spinnerCategory.setAdapter(adapter);
-
-		spinnerCategory.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				if (spinnerCategory.getSelectedItem().toString() == customCategory){
-					final Dialog dialog = new Dialog(AddActivity.this);
-					dialog.setContentView(R.layout.new_category);
-					dialog.setTitle(getString(R.string.addCategoryTitle));
-					
-					Button addCategory = (Button) dialog.findViewById(R.id.addCategory);
-					addCategory.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View arg0) {
-							EditText category = (EditText) dialog.findViewById(R.id.taskCategory);
-							adapter.remove(customCategory);
-							adapter.add(category.getText().toString());
-							adapter.add(customCategory);
-							adapter.notifyDataSetChanged();
-							dialog.dismiss();
-						}
-					});
-
-					dialog.show();
-				}
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
-
-			}
-
-		});
+		Spinner spinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
+		adapterCategory = new ArrayAdapter<String>(AddActivity.this, android.R.layout.simple_spinner_item, taskSource.getCategoryList());
+		adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		adapterCategory.add(customValue);
+		spinnerCategory.setAdapter(adapterCategory);
+		spinnerCategory.setOnItemSelectedListener(this);
+		
+		Spinner spinnerAssignee = (Spinner) findViewById(R.id.spinnerAssignee);
+		adapterAssignee = new ArrayAdapter<String>(AddActivity.this, android.R.layout.simple_spinner_item, taskSource.getAssigneeList());
+		adapterAssignee.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		adapterAssignee.add(customValue);
+		spinnerAssignee.setAdapter(adapterAssignee);
+		spinnerAssignee.setOnItemSelectedListener(this);
 	}
 
 	/**
@@ -109,7 +86,7 @@ public class AddActivity extends Activity {
 
 	public void onClick (View view) {
 		TaskModel aTask = new TaskModel(((EditText)findViewById(R.id.taskTitle)).getText().toString(), ((Spinner)findViewById(R.id.spinnerCategory)).getSelectedItem().toString(),
-				((EditText)findViewById(R.id.taskAssignee)).getText().toString(), ((EditText)findViewById(R.id.taskDescription)).getText().toString());
+				((Spinner)findViewById(R.id.spinnerAssignee)).getSelectedItem().toString(), ((EditText)findViewById(R.id.taskDescription)).getText().toString());
 
 		taskSource.addTask(aTask);
 
@@ -126,5 +103,53 @@ public class AddActivity extends Activity {
 	public void onStop(){
 		taskSource.close();
 		super.onStop();
+	}
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position,
+			long id) {
+			
+		ArrayAdapter<String> adapter = null;
+		
+		Spinner spinner = (Spinner) parent;
+		int spinnerId = spinner.getId();
+		
+		if (spinnerId == R.id.spinnerCategory){
+			adapter = adapterCategory;
+		}
+		else if (spinnerId == R.id.spinnerAssignee){
+			adapter = adapterAssignee;
+		}
+		else 
+			return;
+
+		final ArrayAdapter<String> finalAdapter = adapter;
+		
+		if (spinner.getSelectedItem().toString() == customValue){
+			final Dialog dialog = new Dialog(AddActivity.this);
+			dialog.setContentView(R.layout.new_value);
+			dialog.setTitle(getString(R.string.addValueTitle));
+			
+			Button addCategory = (Button) dialog.findViewById(R.id.addValue);
+			addCategory.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					EditText newVal = (EditText) dialog.findViewById(R.id.newValue);
+					finalAdapter.remove(customValue);
+					finalAdapter.add(newVal.getText().toString());
+					finalAdapter.add(customValue);
+					finalAdapter.notifyDataSetChanged();
+					dialog.dismiss();
+				}
+			});
+
+			dialog.show();	
+		}
+	}
+	
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
+		// TODO Auto-generated method stub
+		
 	}
 }

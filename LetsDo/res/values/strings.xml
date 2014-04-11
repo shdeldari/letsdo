@@ -25,6 +25,8 @@
     <string name="title_activity_select">Select</string>
     <string name="selectAll">All</string>
     <string name="delTask">Delete</string>
-    <string name="filterSw">Filter</string>
+    <string name="filterSw">Filter By</string>
+    <string name="left">Category</string>
+    <string name="right">Assignee</string>
 
 </resources>

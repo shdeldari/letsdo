@@ -66,6 +66,10 @@ public class MainActivity extends Activity {
 			return false;
 		}
 	}
+	
+	public void onFilterClick(View view){
+		System.out.println("filter click!");
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import nz.alex.letsdo.R;
+import nz.alex.letsdo.TaskModel;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -16,13 +17,13 @@ import android.widget.TextView;
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 	 
     private Activity context;
-    private Map<String, List<String>> tasks;
+    private Map<String, List<TaskModel>> tasks;
     private List<String> groups;
  
     public ExpandableListAdapter(Activity context, List<String> groups,
-            Map<String, List<String>> tasks) {
+            Map<String, List<TaskModel>> laptopCollection) {
         this.context = context;
-        this.tasks = tasks;
+        this.tasks = laptopCollection;
         this.groups = groups;
     }
  
@@ -36,7 +37,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
  
     public View getChildView(final int groupPosition, final int childPosition,
             boolean isLastChild, View convertView, ViewGroup parent) {
-        final String task = (String) getChild(groupPosition, childPosition);
+        final TaskModel task = (TaskModel) getChild(groupPosition, childPosition);
         LayoutInflater inflater = context.getLayoutInflater();
  
         if (convertView == null) {
@@ -72,7 +73,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 //            }
 //        });
  
-        item.setText(task);
+        item.setText(task.toString());
         return convertView;
     }
  

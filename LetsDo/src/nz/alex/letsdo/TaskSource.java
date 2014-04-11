@@ -134,6 +134,21 @@ public class TaskSource {
 		return tasksTable;
 	}
 	
+	public ArrayList<TaskModel> getTasksOrderedBy2 (String column){
+		ArrayList<TaskModel> tasksTable = new ArrayList<TaskModel>();
+
+		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns, null, null, null, null, column);
+
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			tasksTable.add(cursorToTask(cursor));
+			cursor.moveToNext();
+		}
+
+		cursor.close();
+		return tasksTable;
+	}
+	
 	public Hashtable<Integer, TaskModel> getAllTasks(){
 		return getTasksOrderedBy(TaskColumns.DATECREATED.name());	
 	}

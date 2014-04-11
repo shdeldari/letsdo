@@ -1,6 +1,7 @@
 package nz.alex.letsdo;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.Switch;
 
 public class MainActivity extends Activity {
 	protected TaskSource taskSource;
@@ -32,6 +34,7 @@ public class MainActivity extends Activity {
 
 	public final static String EXTRA_MESSAGE = "nz.alex.letsdo.MESSAGE";
 	protected ListView list;
+	protected Switch filterSw;
 
 	BasicListAdapter adapter;
 
@@ -44,7 +47,7 @@ public class MainActivity extends Activity {
 	///-----
 	List<String> groupList;
     List<String> childList;
-    Map<String, List<String>> laptopCollection;
+    Map<String, List<TaskModel>> allTaskList;
     ExpandableListView expListView;
     //-------
 
@@ -74,9 +77,8 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		System.out.println("before");
 		setContentView(R.layout.activity_main);
-		System.out.println("after");
+		filterSw = (Switch) findViewById(R.id.switch1);
 		
 		taskSource = TaskSource.GetInstance(this);
 		taskSource.open();
@@ -106,7 +108,7 @@ public class MainActivity extends Activity {
 // 
 //        expListView = (ExpandableListView) findViewById(R.id.listView1);
 //        final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(
-//                this, groupList, laptopCollection);
+//                this, groupList, allTaskList);
 //        expListView.setAdapter(expListAdapter);
 //        expListView.setOnChildClickListener(new OnChildClickListener() {
 //        	 
@@ -209,50 +211,38 @@ public class MainActivity extends Activity {
     private void createGroupList() {
         groupList = new ArrayList<String>();
         //TODO
-        //groupList = getCategories();
-        //or
-        //groupList = getAssignees();
-        groupList.add("HP");
-        groupList.add("Dell");
-        groupList.add("Lenovo");
-        groupList.add("Sony");
-        groupList.add("HCL");
-        groupList.add("Samsung");
+        if(filterSw.isActivated())
+        	groupList = TaskSource.GetInstance(context).getAssigneeList();
+        else 
+        	groupList = TaskSource.GetInstance(context).getCategoryList();
+        System.out.println("group"+groupList.size());
     }
  
     private void createCollection() {
         // preparing laptops collection(child)
     	//TODO
-    	//getTasks(byCategroy)
-    	//getTasks(byAssignee)
-        String[] hpModels = { "HP Pavilion G6-2014TX", "ProBook HP 4540",
-                "HP Envy 4-1025TX" };
-        String[] hclModels = { "HCL S2101", "HCL L2102", "HCL V2002" };
-        String[] lenovoModels = { "IdeaPad Z Series", "Essential G Series",
-                "ThinkPad X Series", "Ideapad Z Series" };
-        String[] sonyModels = { "VAIO E Series", "VAIO Z Series",
-                "VAIO S Series", "VAIO YB Series" };
-        String[] dellModels = { "Inspiron", "Vostro", "XPS" };
-        String[] samsungModels = { "NP Series", "Series 5", "SF Series" };
- 
-        laptopCollection = new LinkedHashMap<String, List<String>>();
- 
-        for (String laptop : groupList) {
-            if (laptop.equals("HP")) {
-                loadChild(hpModels);
-            } else if (laptop.equals("Dell"))
-                loadChild(dellModels);
-            else if (laptop.equals("Sony"))
-                loadChild(sonyModels);
-            else if (laptop.equals("HCL"))
-                loadChild(hclModels);
-            else if (laptop.equals("Samsung"))
-                loadChild(samsungModels);
-            else
-                loadChild(lenovoModels);
- 
-            laptopCollection.put(laptop, childList);
-        }
+    	allTaskList = new LinkedHashMap<String, List<TaskModel>>();
+    	if(filterSw.isActivated()){
+    		ArrayList<TaskModel> tasks = TaskSource.GetInstance(context).getTasksOrderedBy2(TaskColumns.ASSIGNEE.name());
+    		ArrayList<TaskModel>s = null;
+    		for (String g : groupList) {
+    			for (TaskModel t: tasks) {
+					if(t.assignee == g)
+						s.add(t);
+				}
+    			if(s.size()>0)
+    				allTaskList.put(g, s);
+			}
+    	}
+    	else{
+    		ArrayList<TaskModel> tasks = TaskSource.GetInstance(context).getTasksOrderedBy2(TaskColumns.CATEGORY.name());
+    		ArrayList<TaskModel>s;
+    		for (String g : groupList) {
+    			for (TaskModel t: tasks) {
+					System.out.println("g="+g+" / t = "+ t.category);
+				}
+			}
+    	}
     }
  
     private void loadChild(String[] laptopModels) {

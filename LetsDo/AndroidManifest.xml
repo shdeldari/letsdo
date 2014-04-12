@@ -23,14 +23,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="nz.alex.letsdo.AddActivity"
-            android:label="@string/title_activity_add"
-            android:parentActivityName="nz.alex.letsdo.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="nz.alex.letsdo.MainActivity" />
-        </activity>
-        <activity
             android:name="nz.alex.letsdo.ChangeActivity"
             android:label="@string/title_activity_change"
             android:parentActivityName="nz.alex.letsdo.MainActivity" >

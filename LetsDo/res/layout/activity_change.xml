@@ -36,13 +36,10 @@
         android:text="@string/taskCategory"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <EditText
-        android:id="@+id/taskCategory"
+    <Spinner
+        android:id="@+id/spinnerCategory"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/categoryHint"
-        android:inputType="text" />
+        android:layout_height="wrap_content" />
 
     <Space
         android:layout_width="match_parent"
@@ -56,15 +53,12 @@
         android:text="@string/taskAssignee"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <EditText
-        android:id="@+id/taskAssignee"
+   <Spinner
+        android:id="@+id/spinnerAssignee"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/assigneeHint"
-        android:inputType="text" />
+        android:layout_height="wrap_content" />
 
-    <Space
+   <Space
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp" />

@@ -160,7 +160,8 @@ public class MainActivity extends Activity {
 	public void onClick (View view) {
 		taskSource.close();
 
-		Intent intent = new Intent(this, AddActivity.class);
+		Intent intent = new Intent(this, ChangeActivity.class);
+		intent.putExtra(EXTRA_MESSAGE, "null");
 		startActivity(intent);
 	} 
 

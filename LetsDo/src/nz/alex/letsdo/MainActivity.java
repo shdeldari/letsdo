@@ -21,6 +21,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.Switch;
@@ -45,7 +46,6 @@ public class MainActivity extends Activity {
 	View.OnTouchListener gestureListener;
 	
 	///-----
-	List<String> groupList;
     List<String> childList;
     Map<String, List<TaskModel>> allTaskList;
     ExpandableListView expListView;
@@ -101,30 +101,33 @@ public class MainActivity extends Activity {
 		list.setOnItemLongClickListener(itemLongClickListener);
 		list.setOnTouchListener(gestureListener);
 		
-		
-//		createGroupList();
-//		 
-//        createCollection();
+//		
+//		List<String> groupList = createGroupList();      
 // 
 //        expListView = (ExpandableListView) findViewById(R.id.listView1);
-//        final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(
-//                this, groupList, allTaskList);
+//        final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(this, groupList, createCollection(groupList));
 //        expListView.setAdapter(expListAdapter);
 //        expListView.setOnChildClickListener(new OnChildClickListener() {
 //        	 
 //            public boolean onChildClick(ExpandableListView parent, View v,
 //                    int groupPosition, int childPosition, long id) {
-//                final String selected = (String) expListAdapter.getChild(
+//                final TaskModel selected = (TaskModel) expListAdapter.getChild(
 //                        groupPosition, childPosition);
-//                Toast.makeText(getBaseContext(), selected, Toast.LENGTH_LONG)
+//                Toast.makeText(getBaseContext(),  selected.title+" " +groupPosition + ":"+childPosition, Toast.LENGTH_LONG)
 //                        .show();
-// 
+//                
+//                taskSource.close();
+//    			
+//    			Intent intent = new Intent(getApplicationContext(), ChangeActivity.class);
+//    			intent.putExtra(EXTRA_MESSAGE, keys.get(position).toString());
+//    			startActivity(intent);
 //                return true;
 //            }
 //        });
-//        expListView.setOnItemClickListener(itemClickListener);
-//        expListView.setOnItemLongClickListener(itemLongClickListener);
-//        expListView.setOnTouchListener(gestureListener);
+//        //expListView.setOnGroupClickListener(GroupClickListener);
+//        //expListView.setOnItemClickListener(itemClickListener);
+//        //expListView.setOnItemLongClickListener(itemLongClickListener);
+//        //expListView.setOnTouchListener(gestureListener);
 	}
 
 	@Override
@@ -165,10 +168,22 @@ public class MainActivity extends Activity {
 		startActivity(intent);
 	} 
 
+	public OnGroupClickListener GroupClickListener = new OnGroupClickListener(){
+		@Override
+		public boolean onGroupClick(ExpandableListView arg0, View arg1,
+				int arg2, long arg3) {
+			
+			Toast.makeText(getBaseContext(),  " " +arg2 + ":"+arg3, Toast.LENGTH_LONG)
+            .show();
+			return true;
+		}
+		
+	};
 	public OnItemClickListener itemClickListener = new OnItemClickListener() {
 		@Override public void onItemClick(AdapterView<?> parent, View view, int position, long id){
 			taskSource.close();
-
+			
+			
 			Intent intent = new Intent(getApplicationContext(), ChangeActivity.class);
 			intent.putExtra(EXTRA_MESSAGE, keys.get(position).toString());
 			startActivity(intent);
@@ -209,46 +224,43 @@ public class MainActivity extends Activity {
 		adapter.notifyDataSetChanged();
 	}
 	
-    private void createGroupList() {
-        groupList = new ArrayList<String>();
-        //TODO
+    private List<String> createGroupList() {
+    	List<String> groupList = new ArrayList<String>();
         if(filterSw.isActivated())
         	groupList = TaskSource.GetInstance(context).getAssigneeList();
         else 
         	groupList = TaskSource.GetInstance(context).getCategoryList();
         System.out.println("group"+groupList.size());
+		return groupList;
     }
  
-    private void createCollection() {
-        // preparing laptops collection(child)
-    	//TODO
+    private Map<String, List<TaskModel>> createCollection(List<String> groupList) {
     	allTaskList = new LinkedHashMap<String, List<TaskModel>>();
     	if(filterSw.isActivated()){
-    		ArrayList<TaskModel> tasks = TaskSource.GetInstance(context).getTasksOrderedBy2(TaskColumns.ASSIGNEE.name());
-    		ArrayList<TaskModel>s = null;
+    		ArrayList<TaskModel> tasks = TaskSource.GetInstance(context).getTasksOrderedBy2(TaskColumns.ASSIGNEE.name());   		
+    		
     		for (String g : groupList) {
+    			ArrayList<TaskModel>s = new ArrayList<TaskModel>();
     			for (TaskModel t: tasks) {
 					if(t.assignee == g)
 						s.add(t);
 				}
-    			if(s.size()>0)
-    				allTaskList.put(g, s);
+    			allTaskList.put(g, s);
 			}
     	}
     	else{
     		ArrayList<TaskModel> tasks = TaskSource.GetInstance(context).getTasksOrderedBy2(TaskColumns.CATEGORY.name());
-    		ArrayList<TaskModel>s;
+    		System.out.println("tasks from DB: size-"+tasks.size());
     		for (String g : groupList) {
+    			ArrayList<TaskModel>s = new ArrayList<TaskModel>();
     			for (TaskModel t: tasks) {
-					System.out.println("g="+g+" / t = "+ t.category);
+    				if(t.category.equalsIgnoreCase(g)){
+    					s.add(t);
+    				}
 				}
+    			allTaskList.put(g.trim(), s);
 			}
     	}
-    }
- 
-    private void loadChild(String[] laptopModels) {
-        childList = new ArrayList<String>();
-        for (String model : laptopModels)
-            childList.add(model);
+    	return allTaskList;
     }
 }

@@ -20,14 +20,14 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private Map<String, List<TaskModel>> tasks;
     private List<String> groups;
  
-    public ExpandableListAdapter(Activity context, List<String> groups,
-            Map<String, List<TaskModel>> laptopCollection) {
+    public ExpandableListAdapter(Activity context, List<String> groups, Map<String, List<TaskModel>> laptopCollection) {
         this.context = context;
         this.tasks = laptopCollection;
         this.groups = groups;
     }
  
     public Object getChild(int groupPosition, int childPosition) {
+    	System.out.println("getchild - "+ groupPosition+":"+childPosition);
         return tasks.get(groups.get(groupPosition)).get(childPosition);
     }
  
@@ -38,6 +38,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public View getChildView(final int groupPosition, final int childPosition,
             boolean isLastChild, View convertView, ViewGroup parent) {
         final TaskModel task = (TaskModel) getChild(groupPosition, childPosition);
+        System.out.println("getchildView-"+groupPosition+":"+childPosition+"-"+task.toString() );
         LayoutInflater inflater = context.getLayoutInflater();
  
         if (convertView == null) {

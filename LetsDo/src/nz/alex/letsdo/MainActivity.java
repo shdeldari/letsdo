@@ -30,8 +30,7 @@ public class MainActivity extends Activity {
 	protected TaskSource taskSource;
 	protected Context context;
 
-	protected List<TaskModel> values;
-	protected List<Integer> keys;
+	protected ArrayList<Task> tasks;
 
 	public final static String EXTRA_MESSAGE = "nz.alex.letsdo.MESSAGE";
 	protected ListView list;
@@ -83,9 +82,8 @@ public class MainActivity extends Activity {
 		taskSource = TaskSource.GetInstance(this);
 		taskSource.open();
 
-		values = new ArrayList<TaskModel>(taskSource.getAllTasks().values());
-		keys = new ArrayList<Integer>(taskSource.getAllTasks().keySet());
-
+		tasks = taskSource.getAllTasks2();
+		
 		// Gesture detection
 		gestureDetector = new GestureDetector(this, new MyGestureDetector());
 		gestureListener = new View.OnTouchListener() {
@@ -95,7 +93,7 @@ public class MainActivity extends Activity {
 		};
 
 		list = (ListView)findViewById(R.id.listView1);
-		BasicListAdapter adapter = new BasicListAdapter(this, R.layout.list_item, values, false);
+		BasicListAdapter adapter = new BasicListAdapter(this, R.layout.list_item, tasks, false);
 		list.setAdapter(adapter);
 		list.setOnItemClickListener(itemClickListener);
 		list.setOnItemLongClickListener(itemLongClickListener);
@@ -136,10 +134,9 @@ public class MainActivity extends Activity {
 
 		taskSource.open();
 
-		values = new ArrayList<TaskModel>(taskSource.getAllTasks().values());
-		keys = new ArrayList<Integer>(taskSource.getAllTasks().keySet());
-
-		BasicListAdapter adapter = new BasicListAdapter(this,R.layout.list_item, values, false);
+		tasks = taskSource.getAllTasks2();
+		
+		BasicListAdapter adapter = new BasicListAdapter(this,R.layout.list_item, tasks, false);
 		list.setAdapter(adapter);
 		
 	}
@@ -185,7 +182,7 @@ public class MainActivity extends Activity {
 			
 			
 			Intent intent = new Intent(getApplicationContext(), ChangeActivity.class);
-			intent.putExtra(EXTRA_MESSAGE, keys.get(position).toString());
+			intent.putExtra(EXTRA_MESSAGE, Integer.toString(tasks.get(position).getId()));
 			startActivity(intent);
 		}
 	};
@@ -205,20 +202,20 @@ public class MainActivity extends Activity {
 	};
 
 	protected void OnListSwipeLeft(int x, int y){
-		int position = list.pointToPosition(x, y);
+		Task aTask = tasks.get(list.pointToPosition(x, y));
 
-		values.get(position).setStatus(TaskStatus.OPENED);
-		taskSource.openTask(keys.get(position).toString());
-
+		aTask.setStatus(TaskStatus.OPENED);
+		taskSource.openTask(aTask.getId());
+		
 		adapter = (BasicListAdapter) list.getAdapter();
 		adapter.notifyDataSetChanged();		
 	}
 
 	protected void OnListSwipeRight(int x, int y){
-		int position = list.pointToPosition(x, y);
+		Task aTask = tasks.get(list.pointToPosition(x, y));
 
-		values.get(position).setStatus(TaskStatus.CLOSED);
-		taskSource.closeTask(keys.get(position).toString());
+		aTask.setStatus(TaskStatus.CLOSED);
+		taskSource.closeTask(aTask.getId());
 
 		adapter = (BasicListAdapter) list.getAdapter();
 		adapter.notifyDataSetChanged();

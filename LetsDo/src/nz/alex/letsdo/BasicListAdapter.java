@@ -17,9 +17,9 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class BasicListAdapter extends ArrayAdapter<TaskModel>{
+public class BasicListAdapter extends ArrayAdapter<Task>{
 	private LayoutInflater mInflater;
-	List<TaskModel> values;
+	List<Task> tasks;
 	ArrayList <ViewHolder> views;
 	protected String activityName;
 	boolean selector;
@@ -30,10 +30,10 @@ public class BasicListAdapter extends ArrayAdapter<TaskModel>{
         CheckBox chkbox;
     }
 
-	public BasicListAdapter(Context context, int resource, List<TaskModel> values, boolean selector) {
-		super(context, resource, values);
+	public BasicListAdapter(Context context, int resource, List<Task> tasks, boolean selector) {
+		super(context, resource, tasks);
 		mInflater = LayoutInflater.from(context);
-        this.values = values;
+        this.tasks = tasks;
         activityName = context.getClass().getSimpleName();
         this.selector = selector;
         views = new ArrayList<BasicListAdapter.ViewHolder>();
@@ -68,8 +68,8 @@ public class BasicListAdapter extends ArrayAdapter<TaskModel>{
             holder = (ViewHolder) convertView.getTag();
         }
         
-        holder.text.setText(values.get(position).toString());
-        if (values.get(position).getStatus() == TaskStatus.CLOSED)
+        holder.text.setText(tasks.get(position).toString());
+        if (tasks.get(position).getStatus() == TaskStatus.CLOSED)
         	holder.text.setPaintFlags(holder.text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         else
         	holder.text.setPaintFlags(holder.text.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
@@ -88,20 +88,20 @@ public class BasicListAdapter extends ArrayAdapter<TaskModel>{
 
 	@Override
 	public int getCount() {
-		return values.size();
+		return tasks.size();
 	}
 
 	@Override
-	public TaskModel getItem(int arg0) {
-		return values.get(arg0);
+	public Task getItem(int arg0) {
+		return tasks.get(arg0);
 	}
 
 	public ArrayList<Integer> getSelected() {
 		ArrayList<Integer> selected = new ArrayList<Integer>();
-		for (int i = 0; i < values.size(); i++) {
+		for (int i = 0; i < tasks.size(); i++) {
 			if(views.get(i).chkbox.isChecked()){
 				selected.add(i);
-				System.out.println("del"+values.get(i).title);
+				System.out.println("del"+tasks.get(i).toString());
 			}
 		}
 		return selected;

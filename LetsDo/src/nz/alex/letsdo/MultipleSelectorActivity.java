@@ -3,7 +3,6 @@ package nz.alex.letsdo;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,15 +13,14 @@ import android.widget.TextView;
 
 public class MultipleSelectorActivity extends Activity{
 	protected TaskSource taskSource;
-	protected List<TaskModel> values;
-	protected List<Integer> keys;
+	protected ArrayList<Task> tasks;
 	protected BasicListAdapter adapter;
 	protected ListView list;
 	protected CheckBox chkbox;
 	
 	//on ALL check-box click
 	public void onChkBoxClick(View view){
-		adapter= new BasicListAdapter(this, R.layout.list_item, values, chkbox.isChecked());
+		adapter= new BasicListAdapter(this, R.layout.list_item, tasks, chkbox.isChecked());
 		adapter.notifyDataSetChanged();
 		list.setAdapter(adapter);
 		list.refreshDrawableState();
@@ -31,8 +29,8 @@ public class MultipleSelectorActivity extends Activity{
 	public void onDeleteClick(View view){
 		ArrayList<Integer> selectedToDelete = adapter.getSelected();
 		System.out.println("to delete : "+selectedToDelete.size());
-		keys = new ArrayList<Integer>(taskSource.getAllTasks().keySet());
-		System.out.println("keys to delete : "+keys.size());
+		tasks = taskSource.getAllTasks2();
+		System.out.println("tasks to delete : "+tasks.size());
 //		for (int i = 0; i < selectedToDelete.size(); i++) {
 //			TaskSource.GetInstance(getBaseContext()).deleteTask((keys.get(selectedToDelete.get(i).intValue())).toString() );
 //		}
@@ -47,13 +45,10 @@ public class MultipleSelectorActivity extends Activity{
 		taskSource.open();
 
 		if (taskSource.getLen() > 0){
-			values = new ArrayList<TaskModel>(taskSource.getAllTasks().values());
-			keys = new ArrayList<Integer>(taskSource.getAllTasks().keySet());
-			// use the SimpleCursorAdapter to show the
-			// elements in a ListView
-			adapter = new BasicListAdapter(this, R.layout.list_item, values, false);
+			tasks = taskSource.getAllTasks2();
+
+			adapter = new BasicListAdapter(this, R.layout.list_item, tasks, false);
 			list.setAdapter(adapter);
-			
 		}
 	}
 

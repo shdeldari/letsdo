@@ -4,6 +4,32 @@ enum TaskStatus {
 	OPENED, CLOSED;
 }
 
+class Task{
+	private int taskId;
+	protected TaskModel taskModel;
+	
+	public Task(int id, TaskModel model){
+		taskId = id;
+		taskModel = model;
+	}
+	
+	public int getId(){
+		return taskId;
+	}	
+
+	public void setStatus(TaskStatus aStatus){
+		taskModel.status = aStatus;
+	}
+
+	public TaskStatus getStatus(){
+		return taskModel.status;
+	}
+
+	public String toString(){
+		return taskModel.title;
+	}
+}
+
 public class TaskModel {
 		
 	protected String title, category, assignee, description, 

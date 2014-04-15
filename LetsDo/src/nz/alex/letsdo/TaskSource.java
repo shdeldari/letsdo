@@ -24,16 +24,40 @@ public class TaskSource {
 	
 	private static TaskSource Instance = null;
 	
+	private TaskSource(Context context) {
+		dbHelper = new SQLiteHelper(context);
+	}
+
+	private TaskModel cursorToTask(Cursor cursor){
+		TaskModel task = new TaskModel(cursor.getString(TaskColumns.TITLE.ordinal()), 
+				cursor.getString(TaskColumns.CATEGORY.ordinal()), 
+				cursor.getString(TaskColumns.ASSIGNEE.ordinal()), 
+				cursor.getString(TaskColumns.DESCRIPTION.ordinal()), 
+				cursor.getString(TaskColumns.DATEDUE.ordinal()), 
+				TaskStatus.valueOf(cursor.getString(TaskColumns.STATUS.ordinal())));
+		return task;
+	}
+
+	private Set<String> getAllCategories(){
+		Set<String> columnSet = new HashSet<String>();
+		for (TaskModel task: getAllTasks().values())
+			columnSet.add(task.category);
+		return columnSet;	
+	}
+	
+	private Set<String> getAllAssigness(){
+		Set<String> columnSet = new HashSet<String>();
+		for (TaskModel task: getAllTasks().values())
+			columnSet.add(task.assignee);
+		return columnSet;	
+	}
+
 	public static TaskSource GetInstance(Context context){
 		if (Instance == null)
 			return (Instance = new TaskSource(context));
 		return Instance;
 	}
 	
-	private TaskSource(Context context) {
-		dbHelper = new SQLiteHelper(context);
-	}
-
 	public void open() throws SQLException {
 		database = dbHelper.getWritableDatabase();
 	}
@@ -55,6 +79,22 @@ public class TaskSource {
 		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
 
 		database.insert(SQLiteHelper.TABLE_TASKS, null, values);
+	}
+
+	public void changeTask(Task aTask){
+		ContentValues values = new ContentValues();
+		values.put(TaskColumns.TITLE.name(), aTask.taskModel.title);
+		values.put(TaskColumns.CATEGORY.name(), aTask.taskModel.category);
+		values.put(TaskColumns.ASSIGNEE.name(), aTask.taskModel.assignee);
+		values.put(TaskColumns.DESCRIPTION.name(), aTask.taskModel.description);
+		values.put(TaskColumns.DATEDUE.name(), aTask.taskModel.dateDue);
+		values.put(TaskColumns.STATUS.name(), aTask.taskModel.status.name());
+		
+		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
+		
+		String where = TaskColumns.ID.name() + " = " + aTask.getId();
+		
+		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
 	}
 
 	public void changeTask(String rowID, TaskModel aTask){
@@ -84,6 +124,17 @@ public class TaskSource {
 		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
 	}
 
+	public void closeTask(int taskId){
+		ContentValues values = new ContentValues();
+		values.put(TaskColumns.STATUS.name(), TaskStatus.CLOSED.name());
+		
+		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
+		
+		String where = TaskColumns.ID.name() + " = " + Integer.toString(taskId);
+		
+		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
+	}
+
 	public void openTask(String rowID){
 		ContentValues values = new ContentValues();
 		values.put(TaskColumns.STATUS.name(), TaskStatus.OPENED.name());
@@ -91,6 +142,17 @@ public class TaskSource {
 		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
 		
 		String where = TaskColumns.ID.name() + " = " + rowID;
+		
+		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
+	}
+
+	public void openTask(int taskId){
+		ContentValues values = new ContentValues();
+		values.put(TaskColumns.STATUS.name(), TaskStatus.OPENED.name());
+		
+		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
+
+		String where = TaskColumns.ID.name() + " = " + Integer.toString(taskId);
 		
 		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
 	}
@@ -134,7 +196,7 @@ public class TaskSource {
 		return tasksTable;
 	}
 	
-	public ArrayList<TaskModel> getTasksOrderedBy2 (String column){
+	public ArrayList<TaskModel> getTasksOrderedBy2(String column){
 		ArrayList<TaskModel> tasksTable = new ArrayList<TaskModel>();
 
 		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns, null, null, null, null, column);
@@ -149,22 +211,27 @@ public class TaskSource {
 		return tasksTable;
 	}
 	
+	public ArrayList<Task> getTasksOrderedBy3(String column){
+		ArrayList<Task> tasksArray = new ArrayList<Task>();
+
+		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns, null, null, null, null, column);
+
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			tasksArray.add(new Task(cursor.getInt(0), cursorToTask(cursor)));
+			cursor.moveToNext();
+		}
+
+		cursor.close();
+		return tasksArray;
+	}
+
 	public Hashtable<Integer, TaskModel> getAllTasks(){
 		return getTasksOrderedBy(TaskColumns.DATECREATED.name());	
 	}
 	
-	private Set<String> getAllCategories(){
-		Set<String> columnSet = new HashSet<String>();
-		for (TaskModel task: getAllTasks().values())
-			columnSet.add(task.category);
-		return columnSet;	
-	}
-	
-	private Set<String> getAllAssigness(){
-		Set<String> columnSet = new HashSet<String>();
-		for (TaskModel task: getAllTasks().values())
-			columnSet.add(task.assignee);
-		return columnSet;	
+	public ArrayList<Task> getAllTasks2(){
+		return getTasksOrderedBy3(TaskColumns.DATECREATED.name());	
 	}
 
 	public List<String> getCategoryList(){
@@ -181,16 +248,6 @@ public class TaskSource {
 		for (String assignee: columnSet)
 			columnList.add(assignee);
 		return columnList;	
-	}
-
-	private TaskModel cursorToTask(Cursor cursor){
-		TaskModel task = new TaskModel(cursor.getString(TaskColumns.TITLE.ordinal()), 
-				cursor.getString(TaskColumns.CATEGORY.ordinal()), 
-				cursor.getString(TaskColumns.ASSIGNEE.ordinal()), 
-				cursor.getString(TaskColumns.DESCRIPTION.ordinal()), 
-				cursor.getString(TaskColumns.DATEDUE.ordinal()), 
-				TaskStatus.valueOf(cursor.getString(TaskColumns.STATUS.ordinal())));
-		return task;
 	}
 
 	public int getLen(){

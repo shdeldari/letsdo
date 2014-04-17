@@ -71,38 +71,31 @@ public class MainActivity extends Activity {
 	
 	public void onFilterClick(View view){
 		System.out.println("filter click!");
+//		List<String> groupList = createGroupList(); 
+//		final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(this, groupList, createCollection(groupList));
+//		expListView.setAdapter(expListAdapter);
+//		expListView.refreshDrawableState();
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		filterSw = (Switch) findViewById(R.id.switch1);
+		setupLayout();
 		
 		taskSource = TaskSource.GetInstance(this);
 		taskSource.open();
-
 		tasks = taskSource.getAllTasks2();
-		
-		// Gesture detection
-		gestureDetector = new GestureDetector(this, new MyGestureDetector());
-		gestureListener = new View.OnTouchListener() {
-			public boolean onTouch(View v, MotionEvent event) {
-				return gestureDetector.onTouchEvent(event);
-			}
-		};
 
-		list = (ListView)findViewById(R.id.listView1);
 		BasicListAdapter adapter = new BasicListAdapter(this, R.layout.list_item, tasks, false);
 		list.setAdapter(adapter);
 		list.setOnItemClickListener(itemClickListener);
 		list.setOnItemLongClickListener(itemLongClickListener);
 		list.setOnTouchListener(gestureListener);
 		
-//		
+	
 //		List<String> groupList = createGroupList();      
-// 
-//        expListView = (ExpandableListView) findViewById(R.id.listView1);
+//
 //        final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(this, groupList, createCollection(groupList));
 //        expListView.setAdapter(expListAdapter);
 //        expListView.setOnChildClickListener(new OnChildClickListener() {
@@ -122,10 +115,24 @@ public class MainActivity extends Activity {
 //                return true;
 //            }
 //        });
-//        //expListView.setOnGroupClickListener(GroupClickListener);
+//        expListView.setOnGroupClickListener(GroupClickListener);
 //        //expListView.setOnItemClickListener(itemClickListener);
 //        //expListView.setOnItemLongClickListener(itemLongClickListener);
 //        //expListView.setOnTouchListener(gestureListener);
+	}
+
+	private void setupLayout() {
+		filterSw = (Switch) findViewById(R.id.switch1);
+		
+		// Gesture detection
+		gestureDetector = new GestureDetector(this, new MyGestureDetector());
+		gestureListener = new View.OnTouchListener() {
+			public boolean onTouch(View v, MotionEvent event) {
+				return gestureDetector.onTouchEvent(event);
+			}
+		};
+		list = (ListView)findViewById(R.id.listView1);
+//      expListView = (ExpandableListView) findViewById(R.id.listView1);
 	}
 
 	@Override

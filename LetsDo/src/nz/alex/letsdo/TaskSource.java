@@ -4,11 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -28,27 +26,28 @@ public class TaskSource {
 		dbHelper = new SQLiteHelper(context);
 	}
 
-	private TaskModel cursorToTask(Cursor cursor){
-		TaskModel task = new TaskModel(cursor.getString(TaskColumns.TITLE.ordinal()), 
+	private Task cursorToTask(Cursor cursor){
+		TaskModel model = new TaskModel(cursor.getString(TaskColumns.TITLE.ordinal()), 
 				cursor.getString(TaskColumns.CATEGORY.ordinal()), 
 				cursor.getString(TaskColumns.ASSIGNEE.ordinal()), 
 				cursor.getString(TaskColumns.DESCRIPTION.ordinal()), 
 				cursor.getString(TaskColumns.DATEDUE.ordinal()), 
 				TaskStatus.valueOf(cursor.getString(TaskColumns.STATUS.ordinal())));
+		Task task = new Task(cursor.getInt(TaskColumns.ID.ordinal()), model);
 		return task;
 	}
 
 	private Set<String> getAllCategories(){
 		Set<String> columnSet = new HashSet<String>();
-		for (TaskModel task: getAllTasks().values())
-			columnSet.add(task.category);
+		for (Task task: getAllTasks())
+			columnSet.add(task.getCategory());
 		return columnSet;	
 	}
 	
-	private Set<String> getAllAssigness(){
+	private Set<String> getAllAssignees(){
 		Set<String> columnSet = new HashSet<String>();
-		for (TaskModel task: getAllTasks().values())
-			columnSet.add(task.assignee);
+		for (Task task: getAllTasks())
+			columnSet.add(task.getAssignee());
 		return columnSet;	
 	}
 
@@ -82,13 +81,15 @@ public class TaskSource {
 	}
 
 	public void changeTask(Task aTask){
+		TaskModel aModel = aTask.getTaskModel();
+		
 		ContentValues values = new ContentValues();
-		values.put(TaskColumns.TITLE.name(), aTask.taskModel.title);
-		values.put(TaskColumns.CATEGORY.name(), aTask.taskModel.category);
-		values.put(TaskColumns.ASSIGNEE.name(), aTask.taskModel.assignee);
-		values.put(TaskColumns.DESCRIPTION.name(), aTask.taskModel.description);
-		values.put(TaskColumns.DATEDUE.name(), aTask.taskModel.dateDue);
-		values.put(TaskColumns.STATUS.name(), aTask.taskModel.status.name());
+		values.put(TaskColumns.TITLE.name(), aModel.title);
+		values.put(TaskColumns.CATEGORY.name(), aModel.category);
+		values.put(TaskColumns.ASSIGNEE.name(), aModel.assignee);
+		values.put(TaskColumns.DESCRIPTION.name(), aModel.description);
+		values.put(TaskColumns.DATEDUE.name(), aModel.dateDue);
+		values.put(TaskColumns.STATUS.name(), aModel.status.name());
 		
 		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
 		
@@ -113,17 +114,6 @@ public class TaskSource {
 		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
 	}
 
-	public void closeTask(String rowID){
-		ContentValues values = new ContentValues();
-		values.put(TaskColumns.STATUS.name(), TaskStatus.CLOSED.name());
-		
-		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
-		
-		String where = TaskColumns.ID.name() + " = " + rowID;
-		
-		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
-	}
-
 	public void closeTask(int taskId){
 		ContentValues values = new ContentValues();
 		values.put(TaskColumns.STATUS.name(), TaskStatus.CLOSED.name());
@@ -131,17 +121,6 @@ public class TaskSource {
 		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
 		
 		String where = TaskColumns.ID.name() + " = " + Integer.toString(taskId);
-		
-		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
-	}
-
-	public void openTask(String rowID){
-		ContentValues values = new ContentValues();
-		values.put(TaskColumns.STATUS.name(), TaskStatus.OPENED.name());
-		
-		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
-		
-		String where = TaskColumns.ID.name() + " = " + rowID;
 		
 		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
 	}
@@ -181,44 +160,14 @@ public class TaskSource {
 				TaskStatus.valueOf(cursor.getString(TaskColumns.STATUS.ordinal())));
 	}
 	
-	public Hashtable<Integer, TaskModel> getTasksOrderedBy(String column){
-		Hashtable<Integer, TaskModel> tasksTable = new Hashtable<Integer, TaskModel>();
-
-		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns, null, null, null, null, column);
-
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			tasksTable.put(cursor.getInt(0), cursorToTask(cursor));
-			cursor.moveToNext();
-		}
-
-		cursor.close();
-		return tasksTable;
-	}
-	
-	public ArrayList<TaskModel> getTasksOrderedBy2(String column){
-		ArrayList<TaskModel> tasksTable = new ArrayList<TaskModel>();
-
-		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns, null, null, null, null, column);
-
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			tasksTable.add(cursorToTask(cursor));
-			cursor.moveToNext();
-		}
-
-		cursor.close();
-		return tasksTable;
-	}
-	
-	public ArrayList<Task> getTasksOrderedBy3(String column){
+	public ArrayList<Task> getTasksOrderedBy(String column){
 		ArrayList<Task> tasksArray = new ArrayList<Task>();
 
 		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns, null, null, null, null, column);
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			tasksArray.add(new Task(cursor.getInt(0), cursorToTask(cursor)));
+			tasksArray.add(cursorToTask(cursor));
 			cursor.moveToNext();
 		}
 
@@ -226,12 +175,8 @@ public class TaskSource {
 		return tasksArray;
 	}
 
-	public Hashtable<Integer, TaskModel> getAllTasks(){
+	public ArrayList<Task> getAllTasks(){
 		return getTasksOrderedBy(TaskColumns.DATECREATED.name());	
-	}
-	
-	public ArrayList<Task> getAllTasks2(){
-		return getTasksOrderedBy3(TaskColumns.DATECREATED.name());	
 	}
 
 	public List<String> getCategoryList(){
@@ -243,7 +188,7 @@ public class TaskSource {
 	}
 
 	public List<String> getAssigneeList(){
-		Set<String> columnSet = getAllAssigness();
+		Set<String> columnSet = getAllAssignees();
 		List<String> columnList = new ArrayList<String>();
 		for (String assignee: columnSet)
 			columnList.add(assignee);

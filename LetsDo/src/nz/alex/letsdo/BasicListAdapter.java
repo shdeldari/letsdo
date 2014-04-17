@@ -2,10 +2,6 @@ package nz.alex.letsdo;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import nz.alex.letsdo.R;
-import nz.alex.letsdo.TaskModel;
-import nz.alex.letsdo.TaskStatus;
 import android.content.Context;
 import android.graphics.Paint;
 import android.view.LayoutInflater;

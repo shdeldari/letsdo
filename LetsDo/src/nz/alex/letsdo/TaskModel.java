@@ -6,7 +6,7 @@ enum TaskStatus {
 
 class Task{
 	private int taskId;
-	protected TaskModel taskModel;
+	private TaskModel taskModel;
 	
 	public Task(int id, TaskModel model){
 		taskId = id;
@@ -15,6 +15,10 @@ class Task{
 	
 	public int getId(){
 		return taskId;
+	}	
+
+	public TaskModel getTaskModel(){
+		return taskModel;
 	}	
 
 	public void setStatus(TaskStatus aStatus){
@@ -28,6 +32,14 @@ class Task{
 	public String toString(){
 		return taskModel.title;
 	}
+	
+	public String getCategory(){
+		return taskModel.category;
+	}	
+
+	public String getAssignee(){
+		return taskModel.assignee;
+	}	
 }
 
 public class TaskModel {
@@ -55,25 +67,5 @@ public class TaskModel {
 		description = tDescription;
 		dateDue = tDateDue;
 		status = tStatus;
-	}
-	
-	public String toString(){
-		return title;
-	}
-	
-	public void openTask(){
-		status = TaskStatus.OPENED;
-	}
-	
-	public void closeTask(){
-		status = TaskStatus.CLOSED;
-	}
-
-	public TaskStatus getStatus(){
-		return status;
-	}
-
-	public void setStatus(TaskStatus aStatus){
-		status = aStatus;
-	}
+	}	
 }

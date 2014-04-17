@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
 	
 	///-----
     List<String> childList;
-    Map<String, List<TaskModel>> allTaskList;
+    Map<String, List<Task>> allTaskList;
     ExpandableListView expListView;
     //-------
 
@@ -82,7 +82,7 @@ public class MainActivity extends Activity {
 		taskSource = TaskSource.GetInstance(this);
 		taskSource.open();
 
-		tasks = taskSource.getAllTasks2();
+		tasks = taskSource.getAllTasks();
 		
 		// Gesture detection
 		gestureDetector = new GestureDetector(this, new MyGestureDetector());
@@ -134,7 +134,7 @@ public class MainActivity extends Activity {
 
 		taskSource.open();
 
-		tasks = taskSource.getAllTasks2();
+		tasks = taskSource.getAllTasks();
 		
 		BasicListAdapter adapter = new BasicListAdapter(this,R.layout.list_item, tasks, false);
 		list.setAdapter(adapter);
@@ -231,27 +231,27 @@ public class MainActivity extends Activity {
 		return groupList;
     }
  
-    private Map<String, List<TaskModel>> createCollection(List<String> groupList) {
-    	allTaskList = new LinkedHashMap<String, List<TaskModel>>();
+    private Map<String, List<Task>> createCollection(List<String> groupList) {
+    	allTaskList = new LinkedHashMap<String, List<Task>>();
     	if(filterSw.isActivated()){
-    		ArrayList<TaskModel> tasks = TaskSource.GetInstance(context).getTasksOrderedBy2(TaskColumns.ASSIGNEE.name());   		
+    		ArrayList<Task> tasks = TaskSource.GetInstance(context).getTasksOrderedBy(TaskColumns.ASSIGNEE.name());   		
     		
     		for (String g : groupList) {
-    			ArrayList<TaskModel>s = new ArrayList<TaskModel>();
-    			for (TaskModel t: tasks) {
-					if(t.assignee == g)
+    			ArrayList<Task> s = new ArrayList<Task>();
+    			for (Task t: tasks) {
+					if(t.getAssignee() == g)
 						s.add(t);
 				}
     			allTaskList.put(g, s);
 			}
     	}
     	else{
-    		ArrayList<TaskModel> tasks = TaskSource.GetInstance(context).getTasksOrderedBy2(TaskColumns.CATEGORY.name());
+    		ArrayList<Task> tasks = TaskSource.GetInstance(context).getTasksOrderedBy(TaskColumns.CATEGORY.name());
     		System.out.println("tasks from DB: size-"+tasks.size());
     		for (String g : groupList) {
-    			ArrayList<TaskModel>s = new ArrayList<TaskModel>();
-    			for (TaskModel t: tasks) {
-    				if(t.category.equalsIgnoreCase(g)){
+    			ArrayList<Task> s = new ArrayList<Task>();
+    			for (Task t: tasks) {
+    				if(t.getCategory().equalsIgnoreCase(g)){
     					s.add(t);
     				}
 				}

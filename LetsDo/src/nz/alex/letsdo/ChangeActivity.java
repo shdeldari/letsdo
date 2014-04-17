@@ -1,6 +1,7 @@
 package nz.alex.letsdo;
 
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -16,6 +17,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.support.v4.app.NavUtils;
+
+@SuppressLint("CutPasteId")
 
 public class ChangeActivity extends Activity implements OnItemSelectedListener{
 

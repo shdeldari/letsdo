@@ -18,6 +18,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupClickListener;
+import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.Switch;
@@ -42,7 +43,8 @@ public class MainActivity extends Activity {
 	
 	///-----
     List<String> childList;
-    Map<String, List<Task>> allTaskList;
+    protected Map<String, List<Task>> allTaskList;
+    protected List<String> groupList;
     ExpandableListView expListView;
     //-------
 
@@ -66,8 +68,8 @@ public class MainActivity extends Activity {
 	}
 	
 	public void onFilterClick(View view){
-		System.out.println("filter click!");
-//		List<String> groupList = createGroupList(); 
+		groupList = createGroupList(); 
+		allTaskList = createCollection(groupList);
 //		final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(this, groupList, createCollection(groupList));
 //		expListView.setAdapter(expListAdapter);
 //		expListView.refreshDrawableState();
@@ -89,11 +91,10 @@ public class MainActivity extends Activity {
 		list.setOnItemClickListener(itemClickListener);
 		list.setOnItemLongClickListener(itemLongClickListener);
 		list.setOnTouchListener(gestureListener);
-		
-	
+			
 //		List<String> groupList = createGroupList();      
-//
-//        final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(this, groupList, createCollection(groupList));
+//		allTaskList = createCollection(groupList);
+//        final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(this, groupList, allTaskList);
 //        expListView.setAdapter(expListAdapter);
 //        expListView.setOnChildClickListener(new OnChildClickListener() {
 //        	 
@@ -106,14 +107,12 @@ public class MainActivity extends Activity {
 //                
 //                taskSource.close();
 //    			
-//    			Intent intent = new Intent(getApplicationContext(), ChangeActivity.class);
-//    			intent.putExtra(EXTRA_MESSAGE, keys.get(position).toString());
-//    			startActivity(intent);
+////    			Intent intent = new Intent(getApplicationContext(), ChangeActivity.class);
+////    			intent.putExtra(EXTRA_MESSAGE, keys.get(position).toString());
+////    			startActivity(intent);
 //                return true;
 //            }
 //        });
-//        expListView.setOnGroupClickListener(GroupClickListener);
-//        //expListView.setOnItemClickListener(itemClickListener);
 //        //expListView.setOnItemLongClickListener(itemLongClickListener);
 //        //expListView.setOnTouchListener(gestureListener);
 	}
@@ -227,38 +226,32 @@ public class MainActivity extends Activity {
 	
     private List<String> createGroupList() {
     	List<String> groupList = new ArrayList<String>();
-        if(filterSw.isActivated())
+        if(filterSw.isChecked())
         	groupList = TaskSource.GetInstance(context).getAssigneeList();
         else 
         	groupList = TaskSource.GetInstance(context).getCategoryList();
-        System.out.println("group"+groupList.size());
 		return groupList;
     }
  
     private Map<String, List<Task>> createCollection(List<String> groupList) {
     	allTaskList = new LinkedHashMap<String, List<Task>>();
-    	if(filterSw.isActivated()){
+    	if(filterSw.isChecked()){
     		ArrayList<Task> tasks = TaskSource.GetInstance(context).getTasksOrderedBy(TaskColumns.ASSIGNEE.name());   		
-    		
     		for (String g : groupList) {
     			ArrayList<Task> s = new ArrayList<Task>();
-    			for (Task t: tasks) {
-					if(t.getAssignee() == g)
+    			for (Task t: tasks) 
+					if(t.getAssignee().equalsIgnoreCase(g))
 						s.add(t);
-				}
-    			allTaskList.put(g, s);
+    			allTaskList.put(g.trim(), s);
 			}
     	}
     	else{
     		ArrayList<Task> tasks = TaskSource.GetInstance(context).getTasksOrderedBy(TaskColumns.CATEGORY.name());
-    		System.out.println("tasks from DB: size-"+tasks.size());
     		for (String g : groupList) {
     			ArrayList<Task> s = new ArrayList<Task>();
-    			for (Task t: tasks) {
-    				if(t.getCategory().equalsIgnoreCase(g)){
+    			for (Task t: tasks) 
+    				if(t.getCategory().equalsIgnoreCase(g))
     					s.add(t);
-    				}
-				}
     			allTaskList.put(g.trim(), s);
 			}
     	}

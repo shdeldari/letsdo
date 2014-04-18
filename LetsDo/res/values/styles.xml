@@ -39,6 +39,5 @@
 	    <item name="@attr/switchDrawable">@drawable/switch_thumb_activated_holo_light</item>
 	</style>
 	
-
 </resources>
     

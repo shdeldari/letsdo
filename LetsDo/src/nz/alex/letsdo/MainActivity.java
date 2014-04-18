@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
@@ -16,10 +17,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ExpandableListView.OnChildClickListener;
-import android.widget.ListView;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.Switch;
 
@@ -30,10 +32,8 @@ public class MainActivity extends Activity {
 	protected ArrayList<Task> tasks;
 
 	public final static String EXTRA_MESSAGE = "nz.alex.letsdo.MESSAGE";
-	protected ListView list;
 	protected Switch filterSw;
 
-	BasicListAdapter adapter;
 
 	private static final int SWIPE_MIN_DISTANCE = 120;
 	private static final int SWIPE_MAX_OFF_PATH = 250;
@@ -45,7 +45,8 @@ public class MainActivity extends Activity {
     List<String> childList;
     protected Map<String, List<Task>> allTaskList;
     protected List<String> groupList;
-    ExpandableListView expListView;
+    protected ExpandableListView expListView;
+    protected ExpandableListAdapter expListAdapter;
     //-------
 
 	class MyGestureDetector extends SimpleOnGestureListener {
@@ -68,11 +69,7 @@ public class MainActivity extends Activity {
 	}
 	
 	public void onFilterClick(View view){
-		groupList = createGroupList(); 
-		allTaskList = createCollection(groupList);
-//		final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(this, groupList, createCollection(groupList));
-//		expListView.setAdapter(expListAdapter);
-//		expListView.refreshDrawableState();
+		updateList();
 	}
 
 	@Override
@@ -83,43 +80,23 @@ public class MainActivity extends Activity {
 		
 		taskSource = TaskSource.GetInstance(this);
 		taskSource.open();
-
 		tasks = taskSource.getAllTasks();
-
-		BasicListAdapter adapter = new BasicListAdapter(this, R.layout.list_item, tasks, false);
-		list.setAdapter(adapter);
-		list.setOnItemClickListener(itemClickListener);
-		list.setOnItemLongClickListener(itemLongClickListener);
-		list.setOnTouchListener(gestureListener);
 			
-//		List<String> groupList = createGroupList();      
-//		allTaskList = createCollection(groupList);
-//        final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(this, groupList, allTaskList);
-//        expListView.setAdapter(expListAdapter);
-//        expListView.setOnChildClickListener(new OnChildClickListener() {
-//        	 
-//            public boolean onChildClick(ExpandableListView parent, View v,
-//                    int groupPosition, int childPosition, long id) {
-//                final TaskModel selected = (TaskModel) expListAdapter.getChild(
-//                        groupPosition, childPosition);
-//                Toast.makeText(getBaseContext(),  selected.title+" " +groupPosition + ":"+childPosition, Toast.LENGTH_LONG)
-//                        .show();
-//                
-//                taskSource.close();
-//    			
-////    			Intent intent = new Intent(getApplicationContext(), ChangeActivity.class);
-////    			intent.putExtra(EXTRA_MESSAGE, keys.get(position).toString());
-////    			startActivity(intent);
-//                return true;
-//            }
-//        });
-//        //expListView.setOnItemLongClickListener(itemLongClickListener);
-//        //expListView.setOnTouchListener(gestureListener);
+		updateList();
+        expListView.setOnChildClickListener(childClickListener);
+        //expListView.setOnItemLongClickListener(itemLongClickListener);
+        expListView.setOnTouchListener(gestureListener);
 	}
 
 	private void setupLayout() {
+		// Filter button
 		filterSw = (Switch) findViewById(R.id.switch1);
-		
+		filterSw.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
+				onFilterClick(arg0);
+			}
+		});
 		// Gesture detection
 		gestureDetector = new GestureDetector(this, new MyGestureDetector());
 		gestureListener = new View.OnTouchListener() {
@@ -127,8 +104,7 @@ public class MainActivity extends Activity {
 				return gestureDetector.onTouchEvent(event);
 			}
 		};
-		list = (ListView)findViewById(R.id.listView1);
-//      expListView = (ExpandableListView) findViewById(R.id.listView1);
+		expListView = (ExpandableListView) findViewById(R.id.listView1);
 	}
 
 	@Override
@@ -136,18 +112,15 @@ public class MainActivity extends Activity {
 		super.onResume();
 
 		taskSource.open();
-
 		tasks = taskSource.getAllTasks();
-		
-		BasicListAdapter adapter = new BasicListAdapter(this,R.layout.list_item, tasks, false);
-		list.setAdapter(adapter);
-		
+
+		updateList();
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
 		System.out.println("back to main page2");
-		list.refreshDrawableState();
+		updateList();
 		//		this.historyProfs = this.db.getHistory(-1);
 		//	    this.listAdapter.setData(this.historyProfs);
 		//	    this.listAdapter.notifyDataSetChanged();
@@ -168,6 +141,19 @@ public class MainActivity extends Activity {
 		startActivity(intent);
 	} 
 
+	public OnChildClickListener childClickListener = new OnChildClickListener()  {
+   	 
+        public boolean onChildClick(ExpandableListView parent, View v,
+                int groupPosition, int childPosition, long id) {
+            final Task selected = (Task) expListAdapter.getChild(
+                    groupPosition, childPosition);
+            taskSource.close();
+			Intent intent = new Intent(getApplicationContext(), ChangeActivity.class);
+			intent.putExtra(EXTRA_MESSAGE, selected.getId());
+			startActivity(intent);
+            return true;
+        }
+    };
 	public OnGroupClickListener GroupClickListener = new OnGroupClickListener(){
 		@Override
 		public boolean onGroupClick(ExpandableListView arg0, View arg1,
@@ -205,23 +191,23 @@ public class MainActivity extends Activity {
 	};
 
 	protected void OnListSwipeLeft(int x, int y){
-		Task aTask = tasks.get(list.pointToPosition(x, y));
+		Task aTask = tasks.get(expListView.pointToPosition(x, y));
 
 		aTask.setStatus(TaskStatus.OPENED);
 		taskSource.openTask(aTask.getId());
 		
-		adapter = (BasicListAdapter) list.getAdapter();
-		adapter.notifyDataSetChanged();		
+		expListAdapter = (ExpandableListAdapter) expListView.getAdapter();
+		expListAdapter.notifyDataSetChanged();		
 	}
 
 	protected void OnListSwipeRight(int x, int y){
-		Task aTask = tasks.get(list.pointToPosition(x, y));
+		Task aTask = tasks.get(expListView.pointToPosition(x, y));
 
 		aTask.setStatus(TaskStatus.CLOSED);
 		taskSource.closeTask(aTask.getId());
 
-		adapter = (BasicListAdapter) list.getAdapter();
-		adapter.notifyDataSetChanged();
+		expListAdapter = (ExpandableListAdapter) expListView.getAdapter();
+		expListAdapter.notifyDataSetChanged();
 	}
 	
     private List<String> createGroupList() {
@@ -236,7 +222,8 @@ public class MainActivity extends Activity {
     private Map<String, List<Task>> createCollection(List<String> groupList) {
     	allTaskList = new LinkedHashMap<String, List<Task>>();
     	if(filterSw.isChecked()){
-    		ArrayList<Task> tasks = TaskSource.GetInstance(context).getTasksOrderedBy(TaskColumns.ASSIGNEE.name());   		
+    		ArrayList<Task> tasks = TaskSource.GetInstance(context).getTasksOrderedBy(TaskColumns.ASSIGNEE.name());
+    		System.out.println("task size:"+tasks.size());
     		for (String g : groupList) {
     			ArrayList<Task> s = new ArrayList<Task>();
     			for (Task t: tasks) 
@@ -247,6 +234,7 @@ public class MainActivity extends Activity {
     	}
     	else{
     		ArrayList<Task> tasks = TaskSource.GetInstance(context).getTasksOrderedBy(TaskColumns.CATEGORY.name());
+    		System.out.println("task size:"+tasks.size());
     		for (String g : groupList) {
     			ArrayList<Task> s = new ArrayList<Task>();
     			for (Task t: tasks) 
@@ -256,5 +244,13 @@ public class MainActivity extends Activity {
 			}
     	}
     	return allTaskList;
+    }
+    
+    protected void updateList(){
+    	groupList = createGroupList(); 
+		allTaskList = createCollection(groupList);
+		expListAdapter = new ExpandableListAdapter(this, groupList, createCollection(groupList));
+		expListView.setAdapter(expListAdapter);
+		expListView.refreshDrawableState();
     }
 }

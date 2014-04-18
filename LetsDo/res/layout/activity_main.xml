@@ -39,18 +39,12 @@
             android:onClick="onFilterClick"/>
 
     </RelativeLayout>
-	<ListView
-        android:id="@+id/listView1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollingCache="false" >
-    </ListView> 
 
-    <!-- <ExpandableListView
+    <ExpandableListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollingCache="false" >
-    </ExpandableListView>  -->
+    </ExpandableListView> 
 
 </LinearLayout>

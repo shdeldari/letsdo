@@ -3,8 +3,6 @@ package nz.alex.letsdo;
 import java.util.List;
 import java.util.Map;
 
-import nz.alex.letsdo.R;
-import nz.alex.letsdo.TaskModel;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;

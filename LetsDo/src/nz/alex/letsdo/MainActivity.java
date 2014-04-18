@@ -137,7 +137,7 @@ public class MainActivity extends Activity {
 		taskSource.close();
 
 		Intent intent = new Intent(this, ChangeActivity.class);
-		intent.putExtra(EXTRA_MESSAGE, "null");
+		intent.putExtra(EXTRA_MESSAGE, -1);
 		startActivity(intent);
 	} 
 
@@ -171,7 +171,7 @@ public class MainActivity extends Activity {
 			
 			
 			Intent intent = new Intent(getApplicationContext(), ChangeActivity.class);
-			intent.putExtra(EXTRA_MESSAGE, Integer.toString(tasks.get(position).getId()));
+			intent.putExtra(EXTRA_MESSAGE, tasks.get(position).getId());
 			startActivity(intent);
 		}
 	};

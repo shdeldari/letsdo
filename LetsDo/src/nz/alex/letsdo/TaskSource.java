@@ -80,25 +80,7 @@ public class TaskSource {
 		database.insert(SQLiteHelper.TABLE_TASKS, null, values);
 	}
 
-	public void changeTask(Task aTask){
-		TaskModel aModel = aTask.getTaskModel();
-		
-		ContentValues values = new ContentValues();
-		values.put(TaskColumns.TITLE.name(), aModel.title);
-		values.put(TaskColumns.CATEGORY.name(), aModel.category);
-		values.put(TaskColumns.ASSIGNEE.name(), aModel.assignee);
-		values.put(TaskColumns.DESCRIPTION.name(), aModel.description);
-		values.put(TaskColumns.DATEDUE.name(), aModel.dateDue);
-		values.put(TaskColumns.STATUS.name(), aModel.status.name());
-		
-		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
-		
-		String where = TaskColumns.ID.name() + " = " + aTask.getId();
-		
-		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
-	}
-
-	public void changeTask(String rowID, TaskModel aTask){
+	public void changeTask(int taskId, TaskModel aTask){
 		ContentValues values = new ContentValues();
 		values.put(TaskColumns.TITLE.name(), aTask.title);
 		values.put(TaskColumns.CATEGORY.name(), aTask.category);
@@ -109,7 +91,7 @@ public class TaskSource {
 		
 		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
 		
-		String where = TaskColumns.ID.name() + " = " + rowID;
+		String where = TaskColumns.ID.name() + " = " + Integer.toString(taskId);
 		
 		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
 	}
@@ -136,18 +118,18 @@ public class TaskSource {
 		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
 	}
 
-	public void deleteTask(String rowID){
-		String where = TaskColumns.ID.name() + " = " + rowID;
+	public void deleteTask(int taskId){
+		String where = TaskColumns.ID.name() + " = " + Integer.toString(taskId);
 		database.delete(SQLiteHelper.TABLE_TASKS, where, null);
 	}
 
-	public void deleteTasks(ArrayList<String> rowIDList){
-		for (String rowID: rowIDList)
-			deleteTask(rowID);
+	public void deleteTasks(ArrayList<Integer> taskIdList){
+		for (int taskId: taskIdList)
+			deleteTask(taskId);
 	}
 
-	public TaskModel findTask(String rowID) throws Exception{
-		String where = TaskColumns.ID.name() + " = " + rowID;
+	public TaskModel findTask(int taskId) throws Exception{
+		String where = TaskColumns.ID.name() + " = " + Integer.toString(taskId);
 		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns,  where, null, null, null, null);
 		if (cursor.getCount() <= 0)
 			throw new Exception("Task not found!");

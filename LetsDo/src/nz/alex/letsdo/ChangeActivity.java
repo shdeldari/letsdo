@@ -29,14 +29,14 @@ public class ChangeActivity extends Activity implements OnItemSelectedListener{
 
 	protected String customValue;
 
-	protected String rowID;
+	protected int taskId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		Intent intent = getIntent();
-		rowID = Integer.toString(intent.getIntExtra(MainActivity.EXTRA_MESSAGE,0));
+		taskId = intent.getIntExtra(MainActivity.EXTRA_MESSAGE,-1);
 
 		setContentView(R.layout.activity_change);
 		// Show the Up button in the action bar.
@@ -61,12 +61,12 @@ public class ChangeActivity extends Activity implements OnItemSelectedListener{
 		spinnerAssignee.setAdapter(adapterAssignee);
 		spinnerAssignee.setOnItemSelectedListener(this);
 
-		if (rowID.equals("0")){
+		if (taskId == -1){
 			setTitle(getString(R.string.title_activity_add));
 		}
 		else{
 			try{
-				TaskModel aTask = taskSource.findTask(rowID);
+				TaskModel aTask = taskSource.findTask(taskId);
 
 				EditText editText = (EditText)findViewById(R.id.taskTitle);
 				editText.setText(aTask.title);
@@ -128,16 +128,16 @@ public class ChangeActivity extends Activity implements OnItemSelectedListener{
 			}
 			TaskModel aTask = new TaskModel(((EditText)findViewById(R.id.taskTitle)).getText().toString(), ((Spinner)findViewById(R.id.spinnerCategory)).getSelectedItem().toString(),
 					((Spinner)findViewById(R.id.spinnerAssignee)).getSelectedItem().toString(), ((EditText)findViewById(R.id.taskDescription)).getText().toString());
-			if (rowID.equals("0"))
+			if (taskId < 0)
 				taskSource.addTask(aTask);
 			else
-				taskSource.changeTask(rowID, aTask);
+				taskSource.changeTask(taskId, aTask);
 			taskSource.close();
 			finish();
 			break;
 		case R.id.delTask:
-			if (!rowID.equals("0"))
-				taskSource.deleteTask(rowID);
+			if (taskId >= 0)
+				taskSource.deleteTask(taskId);
 		case R.id.discardTask:
 			taskSource.close();
 			finish();

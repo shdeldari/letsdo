@@ -31,8 +31,7 @@
         	android:layout_height="wrap_content"
        		android:layout_alignParentRight="true"
         	android:onClick="onDeleteClick"
-        	android:text="@string/delTask" 
-        	/>
+        	android:text="@string/delTask" />
     </RelativeLayout>
 
     <ListView

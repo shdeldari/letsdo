@@ -60,6 +60,7 @@ public class MainActivity extends Activity {
 					OnListSwipeLeft((int)e1.getX(), (int) e1.getY());
 				}  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
 					OnListSwipeRight((int)e1.getX(), (int) e1.getY());
+					System.out.println("swipe right");
 				}
 			} catch (Exception e) {
 				// nothing

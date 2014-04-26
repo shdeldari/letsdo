@@ -1,5 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+ 
     android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,37 +8,45 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MultipleSelectorActivity" >
+     >
 
-    <RelativeLayout
+   <RelativeLayout
         android:id="@+id/panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-    	<CheckBox 
-        	android:id="@+id/selectAll"
-        	android:layout_width="wrap_content"
-        	android:layout_height="40dp"
-        	android:layout_alignParentLeft="true"
-        	android:text="@string/selectAll"
-        	android:onClick="onChkBoxClick">
-    	</CheckBox>
-    	
-    	<Button
-        	android:id="@+id/delTask"
-        	style="?android:attr/buttonBarButtonStyle"
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-       		android:layout_alignParentRight="true"
-        	android:onClick="onDeleteClick"
-        	android:text="@string/delTask" />
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/addTask"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:onClick="onClick"
+            android:text="@string/addTask" 
+            android:enabled="false"/>
+
+
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:text="@string/filterSw"
+            android:textOn="@string/right"
+            android:textOff="@string/left"
+            android:onClick="onFilterClick"
+            />
+
     </RelativeLayout>
 
-    <ListView
-        android:id="@+id/listView2"
+    <ExpandableListView
+        android:id="@+id/listView1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:scrollingCache="false">
-    </ListView>
+        android:layout_height="wrap_content"
+        android:scrollingCache="false" >
+    </ExpandableListView> 
 
 </LinearLayout>

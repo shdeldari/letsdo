@@ -22,5 +22,8 @@
         android:paddingRight="2dp"
         android:shadowColor="@android:color/black"
         android:visibility="invisible"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:focusableInTouchMode="false"
+		android:clickable="false"
+		android:focusable="false"/>
 </RelativeLayout>

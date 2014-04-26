@@ -53,6 +53,7 @@ public class MainActivity extends Activity {
 		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			try {
+				System.out.println("swip");
 				if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
 					return false;
 				// right to left swipe
@@ -63,7 +64,7 @@ public class MainActivity extends Activity {
 					System.out.println("swipe right");
 				}
 			} catch (Exception e) {
-				// nothing
+				System.out.println("exception: "+ e.getMessage());
 			}
 			return false;
 		}
@@ -93,7 +94,6 @@ public class MainActivity extends Activity {
 		// Filter button
 		filterSw = (Switch) findViewById(R.id.switch1);
 		filterSw.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
 			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
 				onFilterClick(arg0);
 			}
@@ -102,6 +102,7 @@ public class MainActivity extends Activity {
 		gestureDetector = new GestureDetector(this, new MyGestureDetector());
 		gestureListener = new View.OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
+				//Toast.makeText(context, "on touch listener", Toast.LENGTH_LONG).show();
 				return gestureDetector.onTouchEvent(event);
 			}
 		};
@@ -159,7 +160,6 @@ public class MainActivity extends Activity {
 		@Override
 		public boolean onGroupClick(ExpandableListView arg0, View arg1,
 				int arg2, long arg3) {
-			
 			Toast.makeText(getBaseContext(),  " " +arg2 + ":"+arg3, Toast.LENGTH_LONG)
             .show();
 			return true;
@@ -182,7 +182,7 @@ public class MainActivity extends Activity {
 		public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 				int arg2, long arg3) {
 			taskSource.close();
-
+			
 			Intent intent = new Intent(getApplicationContext(), MultipleSelectorActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 			intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -197,7 +197,6 @@ public class MainActivity extends Activity {
 		aTask.setStatus(TaskStatus.OPENED);
 		taskSource.openTask(aTask.getId());
 		
-		expListAdapter = (ExpandableListAdapter) expListView.getAdapter();
 		expListAdapter.notifyDataSetChanged();		
 	}
 
@@ -207,7 +206,6 @@ public class MainActivity extends Activity {
 		aTask.setStatus(TaskStatus.CLOSED);
 		taskSource.closeTask(aTask.getId());
 
-		expListAdapter = (ExpandableListAdapter) expListView.getAdapter();
 		expListAdapter.notifyDataSetChanged();
 	}
 	

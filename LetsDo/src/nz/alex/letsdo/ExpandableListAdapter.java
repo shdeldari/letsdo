@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
@@ -17,6 +18,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private Activity context;
     private Map<String, List<Task>> tasks;
     private List<String> groups;
+    
  
     public ExpandableListAdapter(Activity context, List<String> groups, Map<String, List<Task>> laptopCollection) {
         this.context = context;
@@ -113,5 +115,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
  
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+    
+    public void multipleSelectableMode(){
+    	
     }
 }

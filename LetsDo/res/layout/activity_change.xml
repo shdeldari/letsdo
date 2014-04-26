@@ -1,117 +1,124 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ScrollView1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ChangeActivity" >
 
-    <TextView
-        android:id="@+id/textTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/taskTitle"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <EditText
-        android:id="@+id/taskTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/titleHint"
-        android:inputType="text" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp" />
-
-    <TextView
-        android:id="@+id/textCategory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/taskCategory"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <Spinner
-        android:id="@+id/spinnerCategory"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp" />
-
-    <TextView
-        android:id="@+id/textAssignee"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/taskAssignee"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-   <Spinner
-        android:id="@+id/spinnerAssignee"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-   <Space
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp" />
-
-    <TextView
-        android:id="@+id/textDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/taskDescription"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <EditText
-        android:id="@+id/taskDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textMultiLine" />
-
     <LinearLayout
-        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/saveTask"
-            style="?android:attr/buttonBarButtonStyle"
+        <TextView
+            android:id="@+id/textTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="18dp"
-            android:layout_marginTop="22dp"
-            android:onClick="onClick"
-            android:text="@string/saveTask" />
+            android:text="@string/taskTitle"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <Button
-            android:id="@+id/discardTask"
-            style="?android:attr/buttonBarButtonStyle"
+        <EditText
+            android:id="@+id/taskTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/titleHint"
+            android:inputType="text"
+            android:textIsSelectable="true" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:id="@+id/textCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="18dp"
-            android:layout_marginTop="22dp"
-            android:onClick="onClick"
-            android:text="@string/discardTask" />
+            android:text="@string/taskCategory"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <Button
-            android:id="@+id/delTask"
-            style="?android:attr/buttonBarButtonStyle"
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:id="@+id/textAssignee"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="18dp"
-            android:layout_marginTop="22dp"
-            android:onClick="onClick"
-            android:text="@string/delTask" />
+            android:text="@string/taskAssignee"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Spinner
+            android:id="@+id/spinnerAssignee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:id="@+id/textDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/taskDescription"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/taskDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textMultiLine" />
+
+        <LinearLayout
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/saveTask"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="18dp"
+                android:layout_marginTop="22dp"
+                android:onClick="onClick"
+                android:text="@string/saveTask" />
+
+            <Button
+                android:id="@+id/discardTask"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="18dp"
+                android:layout_marginTop="22dp"
+                android:onClick="onClick"
+                android:text="@string/discardTask" />
+
+            <Button
+                android:id="@+id/delTask"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="18dp"
+                android:layout_marginTop="22dp"
+                android:onClick="onClick"
+                android:text="@string/delTask" />
+        </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+</ScrollView>

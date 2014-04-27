@@ -27,8 +27,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/titleHint"
-            android:inputType="text"
-            android:textIsSelectable="true" />
+            android:inputType="text" />
 
         <Space
             android:layout_width="match_parent"

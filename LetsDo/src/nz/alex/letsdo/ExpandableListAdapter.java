@@ -5,6 +5,7 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +28,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     }
  
     public Object getChild(int groupPosition, int childPosition) {
-    	System.out.println("getchild - "+ groupPosition+":"+childPosition);
+    	//System.out.println("getchild - "+ groupPosition+":"+childPosition);
         return tasks.get(groups.get(groupPosition)).get(childPosition);
     }
  
@@ -38,7 +39,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public View getChildView(final int groupPosition, final int childPosition,
             boolean isLastChild, View convertView, ViewGroup parent) {
         final Task task = (Task) getChild(groupPosition, childPosition);
-        System.out.println("getchildView-"+groupPosition+":"+childPosition+"-"+task.toString() );
+        //System.out.println("getchildView-"+groupPosition+":"+childPosition+"-"+task.toString() );
         LayoutInflater inflater = context.getLayoutInflater();
  
         if (convertView == null) {
@@ -46,7 +47,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
  
         TextView item = (TextView) convertView.findViewById(R.id.task);
- 
+        if (task.getStatus() == TaskStatus.CLOSED)
+        	item.setPaintFlags(item.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        else
+        	item.setPaintFlags(item.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+
 //        ImageView delete = (ImageView) convertView.findViewById(R.id.delete);
 //        delete.setOnClickListener(new OnClickListener() {
 // 

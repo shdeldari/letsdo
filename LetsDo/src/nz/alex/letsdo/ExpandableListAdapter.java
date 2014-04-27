@@ -19,12 +19,16 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private Activity context;
     private Map<String, List<Task>> tasks;
     private List<String> groups;
+    boolean selector = false;
+    private String activityName;
     
  
     public ExpandableListAdapter(Activity context, List<String> groups, Map<String, List<Task>> laptopCollection) {
         this.context = context;
         this.tasks = laptopCollection;
         this.groups = groups;
+        //this.selector = selector;
+        activityName = context.getClass().getSimpleName();
     }
  
     public Object getChild(int groupPosition, int childPosition) {
@@ -52,6 +56,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         else
         	item.setPaintFlags(item.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
 
+        CheckBox chk = (CheckBox) convertView.findViewById(R.id.chkBox);
+        if(activityName.equals("MainActivity")) 
+        	chk.setVisibility(View.INVISIBLE);	
+        else {
+        	chk.setVisibility(View.VISIBLE);
+        }
 //        ImageView delete = (ImageView) convertView.findViewById(R.id.delete);
 //        delete.setOnClickListener(new OnClickListener() {
 // 

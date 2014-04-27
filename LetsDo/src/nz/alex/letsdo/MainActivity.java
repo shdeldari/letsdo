@@ -36,9 +36,9 @@ public class MainActivity extends Activity {
 	protected Switch filterSw;
 
 
-	private static final int SWIPE_MIN_DISTANCE = 50;
-	private static final int SWIPE_MAX_OFF_PATH = 50;
-	private static final int SWIPE_THRESHOLD_VELOCITY = 50;
+	private static final int SWIPE_MIN_DISTANCE = 120;
+	private static final int SWIPE_MAX_OFF_PATH = 250;
+	private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 	private GestureDetector gestureDetector;
 	View.OnTouchListener gestureListener;
 	
@@ -54,18 +54,14 @@ public class MainActivity extends Activity {
 		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			try {
-				System.out.println("swip");
 				if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH){
-					System.out.println("no swipe!");
 					return false;
 				}
 				// right to left swipe
 				if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-					System.out.println("swipe left");
 					OnListSwipeLeft((int)e1.getX(), (int) e1.getY());
 				}  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
 					OnListSwipeRight((int)e1.getX(), (int) e1.getY());
-					System.out.println("swipe right");
 				}
 			} catch (Exception e) {
 				System.out.println("exception: "+ e.getMessage());
@@ -90,7 +86,7 @@ public class MainActivity extends Activity {
 			
 		updateList();
         expListView.setOnChildClickListener(childClickListener);
-        //expListView.setOnItemLongClickListener(itemLongClickListener);
+        expListView.setOnItemLongClickListener(itemLongClickListener);
         expListView.setOnTouchListener(gestureListener);
 	}
 
@@ -106,7 +102,6 @@ public class MainActivity extends Activity {
 		gestureDetector = new GestureDetector(this, new MyGestureDetector());
 		gestureListener = new View.OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
-				//Toast.makeText(context, "on touch listener", Toast.LENGTH_LONG).show();
 				return gestureDetector.onTouchEvent(event);
 			}
 		};
@@ -116,10 +111,8 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume(){
 		super.onResume();
-
 		taskSource.open();
 		tasks = taskSource.getAllTasks();
-
 		updateList();
 	}
 
@@ -199,10 +192,7 @@ public class MainActivity extends Activity {
 		  long packedPosition = expListView.getExpandableListPosition(expListView.pointToPosition(x, y));
 		  int groupPosition=0;
 		  int childPosition=-1;
-		  // 2. Unpack packed position type
 		  int positionType = ExpandableListView.getPackedPositionType(packedPosition);
-		  // 3. Unpack position values based on positionType
-		  //    if not PACKED_POSITION_TYPE_NULL there will at least be a groupPosition
 		  if( positionType != ExpandableListView.PACKED_POSITION_TYPE_NULL ){		      
 		      groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition);
 		      if(positionType == ExpandableListView.PACKED_POSITION_TYPE_CHILD){
@@ -213,8 +203,6 @@ public class MainActivity extends Activity {
 		  }
 		if(childPosition>=0){
 			Task aTask = allTaskList.get(groupList.get(groupPosition)).get(childPosition);
-			//Task aTask = tasks.get(expListView.pointToPosition(x, y));
-
 			aTask.setStatus(TaskStatus.OPENED);
 			taskSource.openTask(aTask.getId());
 		
@@ -226,10 +214,7 @@ public class MainActivity extends Activity {
 		long packedPosition = expListView.getExpandableListPosition(expListView.pointToPosition(x, y));
 		  int groupPosition=0;
 		  int childPosition=-1;
-		  // 2. Unpack packed position type
 		  int positionType = ExpandableListView.getPackedPositionType(packedPosition);
-		  // 3. Unpack position values based on positionType
-		  //    if not PACKED_POSITION_TYPE_NULL there will at least be a groupPosition
 		  if( positionType != ExpandableListView.PACKED_POSITION_TYPE_NULL ){		      
 		      groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition);
 		      if(positionType == ExpandableListView.PACKED_POSITION_TYPE_CHILD){
@@ -240,8 +225,6 @@ public class MainActivity extends Activity {
 		  }
 		if(childPosition>=0){
 			Task aTask = allTaskList.get(groupList.get(groupPosition)).get(childPosition);
-			//Task aTask = tasks.get(expListView.pointToPosition(x, y));
-
 			aTask.setStatus(TaskStatus.CLOSED);
 			taskSource.closeTask(aTask.getId());
 
@@ -262,7 +245,6 @@ public class MainActivity extends Activity {
     	allTaskList = new LinkedHashMap<String, List<Task>>();
     	if(filterSw.isChecked()){
     		ArrayList<Task> tasks = TaskSource.GetInstance(context).getTasksOrderedBy(TaskColumns.ASSIGNEE.name());
-    		System.out.println("task size:"+tasks.size());
     		for (String g : groupList) {
     			ArrayList<Task> s = new ArrayList<Task>();
     			for (Task t: tasks) 
@@ -273,7 +255,6 @@ public class MainActivity extends Activity {
     	}
     	else{
     		ArrayList<Task> tasks = TaskSource.GetInstance(context).getTasksOrderedBy(TaskColumns.CATEGORY.name());
-    		System.out.println("task size:"+tasks.size());
     		for (String g : groupList) {
     			ArrayList<Task> s = new ArrayList<Task>();
     			for (Task t: tasks) 

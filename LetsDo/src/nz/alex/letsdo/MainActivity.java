@@ -29,9 +29,8 @@ import android.widget.Switch;
 public class MainActivity extends Activity {
 	protected TaskSource taskSource;
 	protected Context context;
-
 	protected ArrayList<Task> tasks;
-
+	protected enum activity_mode {LIST,DELETE;};
 	public final static String EXTRA_MESSAGE = "nz.alex.letsdo.MESSAGE";
 	protected Switch filterSw;
 
@@ -177,13 +176,17 @@ public class MainActivity extends Activity {
 	public OnItemLongClickListener itemLongClickListener = new OnItemLongClickListener() {
 		@Override
 		public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-				int arg2, long arg3) {
-			taskSource.close();
+				int group_position, long child_position) {
+			//taskSource.close();
+//			System.out.println("getChildCount : "+expListView.getChildCount());
+//			System.out.println("getCount : "+expListView.getCount());
+//			arg1.findViewById(R.id.chkBox).setVisibility(View.VISIBLE);;
 			
-			Intent intent = new Intent(getApplicationContext(), MultipleSelectorActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-			startActivity(intent);
+			//expListAdapter.enableDelete(group_position, child_position);
+//			Intent intent = new Intent(getApplicationContext(), MultipleSelectorActivity.class);
+//			intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//			intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//			startActivity(intent);
 			return true;
 		}
 	};

@@ -32,7 +32,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     }
  
     public Object getChild(int groupPosition, int childPosition) {
-    	//System.out.println("getchild - "+ groupPosition+":"+childPosition);
         return tasks.get(groups.get(groupPosition)).get(childPosition);
     }
  
@@ -135,4 +134,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public void multipleSelectableMode(){
     	
     }
+
+	public void enableDelete(int group_position, long child_position) {
+
+   	}
 }

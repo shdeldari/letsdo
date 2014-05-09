@@ -33,6 +33,8 @@ public class MainActivity extends Activity {
 	protected enum activity_mode {LIST,DELETE;};
 	public final static String EXTRA_MESSAGE = "nz.alex.letsdo.MESSAGE";
 	protected Switch filterSw;
+	protected boolean DELETE_MODE=false;
+	protected ArrayList<View> deleteBtn = new ArrayList<View>();
 
 
 	private static final int SWIPE_MIN_DISTANCE = 120;
@@ -71,6 +73,19 @@ public class MainActivity extends Activity {
 	
 	public void onFilterClick(View view){
 		updateList();
+	}
+	
+	@Override
+	public void onBackPressed() {
+		if(DELETE_MODE){
+			for (int i = 0; i < deleteBtn.size(); i++) {
+				deleteBtn.get(i).setVisibility(View.INVISIBLE);
+			}
+			DELETE_MODE = false;
+			deleteBtn.clear();
+		}else{
+			super.onBackPressed();
+		}
 	}
 
 	@Override
@@ -177,16 +192,9 @@ public class MainActivity extends Activity {
 		@Override
 		public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 				int group_position, long child_position) {
-			//taskSource.close();
-//			System.out.println("getChildCount : "+expListView.getChildCount());
-//			System.out.println("getCount : "+expListView.getCount());
-//			arg1.findViewById(R.id.chkBox).setVisibility(View.VISIBLE);;
-			
-			//expListAdapter.enableDelete(group_position, child_position);
-//			Intent intent = new Intent(getApplicationContext(), MultipleSelectorActivity.class);
-//			intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//			intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//			startActivity(intent);
+			DELETE_MODE = true;
+			arg1.findViewById(R.id.chkBox).setVisibility(View.VISIBLE);;
+			deleteBtn.add(arg1.findViewById(R.id.chkBox));
 			return true;
 		}
 	};

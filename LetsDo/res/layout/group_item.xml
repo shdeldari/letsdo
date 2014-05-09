@@ -3,27 +3,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:padding="10dp" >
+    android:padding="10dp" 
+    android:descendantFocusability="blocksDescendants">
  
     <TextView
         android:id="@+id/group"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:paddingLeft="25dp"
         android:textSize="20sp"
         android:gravity="center_vertical"
-        android:textColor="@android:color/holo_blue_dark"/>
+        android:textColor="@android:color/holo_blue_dark"
+        android:layout_toLeftOf="@id/chkBox"
+        android:maxLines="2"/>
         
-    <CheckBox
+    <ImageButton
         android:id="@+id/chkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="30dp"
+        android:layout_height="35dp"
         android:layout_alignParentRight="true"
-        android:paddingRight="2dp"
-        android:shadowColor="@android:color/black"
+        android:paddingRight="5dp"
         android:visibility="invisible"
         android:layout_centerVertical="true"
         android:focusableInTouchMode="false"
 		android:clickable="false"
-		android:focusable="false"/>
+		android:focusable="false"
+		android:background="@drawable/ic_menu_delete"
+		android:contentDescription="@string/delTask"/>
 </RelativeLayout>

@@ -2,17 +2,19 @@ package nz.alex.letsdo;
 
 import java.util.List;
 import java.util.Map;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 	 
@@ -55,7 +57,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         else
         	item.setPaintFlags(item.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
 
-        CheckBox chk = (CheckBox) convertView.findViewById(R.id.chkBox);
+        ImageButton chk = (ImageButton) convertView.findViewById(R.id.chkBox);
+        chk.setOnClickListener(deleteBtnListener);
         if(activityName.equals("MainActivity")) 
         	chk.setVisibility(View.INVISIBLE);	
         else {
@@ -138,4 +141,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 	public void enableDelete(int group_position, long child_position) {
 
    	}
+	
+	public OnClickListener deleteBtnListener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View arg0) {
+			Toast.makeText(context, "delete task!", Toast.LENGTH_SHORT).show();
+		}
+	};
 }

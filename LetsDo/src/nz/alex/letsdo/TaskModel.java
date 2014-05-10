@@ -39,7 +39,13 @@ class Task{
 
 	public String getAssignee(){
 		return taskModel.assignee;
-	}	
+	}
+	
+	public boolean isOpen(){
+		if (taskModel.status == TaskStatus.OPENED)
+			return true;
+		return false;
+	}
 }
 
 public class TaskModel {

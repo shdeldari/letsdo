@@ -27,13 +27,23 @@ import android.widget.Toast;
 import android.widget.Switch;
 
 public class MainActivity extends Activity {
+	protected enum ActivityMode {
+		LIST,
+		DELETE;
+	}
+
+	protected enum GroupMode {
+		GROUPED_BY_ASSIGNEE,
+		GROUPED_BY_CATEGORY;
+	}
+
 	protected TaskSource taskSource;
 	protected Context context;
 	protected ArrayList<Task> tasks;
-	protected enum activity_mode {LIST,DELETE;};
+
 	public final static String EXTRA_MESSAGE = "nz.alex.letsdo.MESSAGE";
 	protected Switch filterSw;
-	protected boolean DELETE_MODE=false;
+	protected boolean DELETE_MODE = false;
 	protected ArrayList<View> deleteBtn = new ArrayList<View>();
 
 
@@ -42,14 +52,14 @@ public class MainActivity extends Activity {
 	private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 	private GestureDetector gestureDetector;
 	View.OnTouchListener gestureListener;
-	
+
 	///-----
-    List<String> childList;
-    protected Map<String, List<Task>> allTaskList;
-    protected List<String> groupList;
-    protected ExpandableListView expListView;
-    protected ExpandableListAdapter expListAdapter;
-    //-------
+	List<String> childList;
+	protected Map<String, List<Task>> groupedTaskList;
+	protected List<String> groupList;
+	protected ExpandableListView expListView;
+	protected ExpandableListAdapter expListAdapter;
+	//-------
 
 	class MyGestureDetector extends SimpleOnGestureListener {
 		@Override
@@ -70,11 +80,11 @@ public class MainActivity extends Activity {
 			return false;
 		}
 	}
-	
+
 	public void onFilterClick(View view){
 		updateList();
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		if(DELETE_MODE){
@@ -93,15 +103,15 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		setupLayout();
-		
+
 		taskSource = TaskSource.GetInstance(this);
 		taskSource.open();
 		tasks = taskSource.getAllTasks();
-			
+
 		updateList();
-        expListView.setOnChildClickListener(childClickListener);
-        expListView.setOnItemLongClickListener(itemLongClickListener);
-        expListView.setOnTouchListener(gestureListener);
+		expListView.setOnChildClickListener(childClickListener);
+		expListView.setOnItemLongClickListener(itemLongClickListener);
+		expListView.setOnTouchListener(gestureListener);
 	}
 
 	private void setupLayout() {
@@ -155,33 +165,33 @@ public class MainActivity extends Activity {
 	} 
 
 	public OnChildClickListener childClickListener = new OnChildClickListener()  {
-   	 
-        public boolean onChildClick(ExpandableListView parent, View v,
-                int groupPosition, int childPosition, long id) {
-            final Task selected = (Task) expListAdapter.getChild(
-                    groupPosition, childPosition);
-            taskSource.close();
+
+		public boolean onChildClick(ExpandableListView parent, View v,
+				int groupPosition, int childPosition, long id) {
+			final Task selected = (Task) expListAdapter.getChild(
+					groupPosition, childPosition);
+			taskSource.close();
 			Intent intent = new Intent(getApplicationContext(), ChangeActivity.class);
 			intent.putExtra(EXTRA_MESSAGE, selected.getId());
 			startActivity(intent);
-            return true;
-        }
-    };
+			return true;
+		}
+	};
 	public OnGroupClickListener GroupClickListener = new OnGroupClickListener(){
 		@Override
 		public boolean onGroupClick(ExpandableListView arg0, View arg1,
 				int arg2, long arg3) {
 			Toast.makeText(getBaseContext(),  " " +arg2 + ":"+arg3, Toast.LENGTH_LONG)
-            .show();
+			.show();
 			return true;
 		}
-		
+
 	};
 	public OnItemClickListener itemClickListener = new OnItemClickListener() {
 		@Override public void onItemClick(AdapterView<?> parent, View view, int position, long id){
 			taskSource.close();
-			
-			
+
+
 			Intent intent = new Intent(getApplicationContext(), ChangeActivity.class);
 			intent.putExtra(EXTRA_MESSAGE, tasks.get(position).getId());
 			startActivity(intent);
@@ -200,88 +210,93 @@ public class MainActivity extends Activity {
 	};
 
 	protected void OnListSwipeLeft(int x, int y){
-		  long packedPosition = expListView.getExpandableListPosition(expListView.pointToPosition(x, y));
-		  int groupPosition=0;
-		  int childPosition=-1;
-		  int positionType = ExpandableListView.getPackedPositionType(packedPosition);
-		  if( positionType != ExpandableListView.PACKED_POSITION_TYPE_NULL ){		      
-		      groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition);
-		      if(positionType == ExpandableListView.PACKED_POSITION_TYPE_CHILD){
-		          childPosition = ExpandableListView.getPackedPositionChild(packedPosition);
-		      }
-		  }else{
-		      Log.d("FooLabel", "positionType was NULL - header/footer?");
-		  }
+		long packedPosition = expListView.getExpandableListPosition(expListView.pointToPosition(x, y));
+		int groupPosition=0;
+		int childPosition=-1;
+		int positionType = ExpandableListView.getPackedPositionType(packedPosition);
+		if( positionType != ExpandableListView.PACKED_POSITION_TYPE_NULL ){		      
+			groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition);
+			if(positionType == ExpandableListView.PACKED_POSITION_TYPE_CHILD){
+				childPosition = ExpandableListView.getPackedPositionChild(packedPosition);
+			}
+		}else{
+			Log.d("FooLabel", "positionType was NULL - header/footer?");
+		}
 		if(childPosition>=0){
-			Task aTask = allTaskList.get(groupList.get(groupPosition)).get(childPosition);
+			Task aTask = groupedTaskList.get(groupList.get(groupPosition)).get(childPosition);
 			aTask.setStatus(TaskStatus.OPENED);
 			taskSource.openTask(aTask.getId());
-		
+
 			expListAdapter.notifyDataSetChanged();
 		}
 	}
 
 	protected void OnListSwipeRight(int x, int y){
 		long packedPosition = expListView.getExpandableListPosition(expListView.pointToPosition(x, y));
-		  int groupPosition=0;
-		  int childPosition=-1;
-		  int positionType = ExpandableListView.getPackedPositionType(packedPosition);
-		  if( positionType != ExpandableListView.PACKED_POSITION_TYPE_NULL ){		      
-		      groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition);
-		      if(positionType == ExpandableListView.PACKED_POSITION_TYPE_CHILD){
-		          childPosition = ExpandableListView.getPackedPositionChild(packedPosition);
-		      }
-		  }else{
-		      Log.d("FooLabel", "positionType was NULL - header/footer?");
-		  }
+		int groupPosition=0;
+		int childPosition=-1;
+		int positionType = ExpandableListView.getPackedPositionType(packedPosition);
+		if( positionType != ExpandableListView.PACKED_POSITION_TYPE_NULL ){		      
+			groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition);
+			if(positionType == ExpandableListView.PACKED_POSITION_TYPE_CHILD){
+				childPosition = ExpandableListView.getPackedPositionChild(packedPosition);
+			}
+		}else{
+			Log.d("FooLabel", "positionType was NULL - header/footer?");
+		}
 		if(childPosition>=0){
-			Task aTask = allTaskList.get(groupList.get(groupPosition)).get(childPosition);
+			Task aTask = groupedTaskList.get(groupList.get(groupPosition)).get(childPosition);
 			aTask.setStatus(TaskStatus.CLOSED);
 			taskSource.closeTask(aTask.getId());
 
 			expListAdapter.notifyDataSetChanged();
 		}
 	}
-	
-    private List<String> createGroupList() {
-    	List<String> groupList = new ArrayList<String>();
-        if(filterSw.isChecked())
-        	groupList = TaskSource.GetInstance(context).getAssigneeList();
-        else 
-        	groupList = TaskSource.GetInstance(context).getCategoryList();
-		return groupList;
-    }
- 
-    private Map<String, List<Task>> createCollection(List<String> groupList) {
-    	allTaskList = new LinkedHashMap<String, List<Task>>();
-    	if(filterSw.isChecked()){
-    		ArrayList<Task> tasks = TaskSource.GetInstance(context).getTasksOrderedBy(TaskColumns.ASSIGNEE.name());
-    		for (String g : groupList) {
-    			ArrayList<Task> s = new ArrayList<Task>();
-    			for (Task t: tasks) 
-					if(t.getAssignee().equalsIgnoreCase(g))
-						s.add(t);
-    			allTaskList.put(g.trim(), s);
-			}
-    	}
-    	else{
-    		ArrayList<Task> tasks = TaskSource.GetInstance(context).getTasksOrderedBy(TaskColumns.CATEGORY.name());
-    		for (String g : groupList) {
-    			ArrayList<Task> s = new ArrayList<Task>();
-    			for (Task t: tasks) 
-    				if(t.getCategory().equalsIgnoreCase(g))
-    					s.add(t);
-    			allTaskList.put(g.trim(), s);
-			}
-    	}
-    	return allTaskList;
-    }
-    
-    protected void updateList(){
-    	groupList = createGroupList(); 
-		allTaskList = createCollection(groupList);
-		expListAdapter = new ExpandableListAdapter(this, groupList, createCollection(groupList));
+
+	private Map<String, List<Task>> createCollection(GroupMode mode) {
+		groupedTaskList = new LinkedHashMap<String, List<Task>>();
+		ArrayList<Task> tasks = TaskSource.GetInstance(context).getAllTasks();
+		groupList = new ArrayList<String>();
+
+		if (mode == GroupMode.GROUPED_BY_ASSIGNEE)
+			groupList = TaskSource.GetInstance(context).getAssigneeList();
+		else 
+			groupList = TaskSource.GetInstance(context).getCategoryList();
+
+		for (String groupName : groupList) {
+			ArrayList<Task> openedTasks = new ArrayList<Task>();
+			ArrayList<Task> closedTasks = new ArrayList<Task>();
+			for (Task task: tasks) 
+				if (mode == GroupMode.GROUPED_BY_ASSIGNEE){
+					if(task.getAssignee().equalsIgnoreCase(groupName)){
+						if (task.isOpen())
+							openedTasks.add(task);
+						else
+							closedTasks.add(task);
+					}
+				}
+				else{
+					if(task.getCategory().equalsIgnoreCase(groupName)){
+						if (task.isOpen())
+							openedTasks.add(task);
+						else
+							closedTasks.add(task);
+					}
+				}
+			openedTasks.addAll(closedTasks);
+			groupedTaskList.put(groupName.trim(), openedTasks);
+		}
+		return groupedTaskList;
+	}
+
+	protected void updateList(){
+		if (filterSw.isChecked())
+			groupedTaskList = createCollection(GroupMode.GROUPED_BY_ASSIGNEE);
+		else 
+			groupedTaskList = createCollection(GroupMode.GROUPED_BY_CATEGORY);
+		
+		expListAdapter = new ExpandableListAdapter(this, groupList, groupedTaskList);
 		expListView.setAdapter(expListAdapter);
 		expListView.refreshDrawableState();
-    }
+	}
 }

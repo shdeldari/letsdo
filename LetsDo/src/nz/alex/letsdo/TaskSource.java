@@ -144,8 +144,7 @@ public class TaskSource {
 	
 	public ArrayList<Task> getTasksOrderedBy(String column){
 		ArrayList<Task> tasksArray = new ArrayList<Task>();
-
-		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns, null, null, null, null, column);
+		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns, null, null, null, null, column +" DESC");
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {

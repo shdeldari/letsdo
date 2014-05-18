@@ -294,7 +294,7 @@ public class MainActivity extends Activity {
 			groupedTaskList = createCollection(GroupMode.GROUPED_BY_ASSIGNEE);
 		else 
 			groupedTaskList = createCollection(GroupMode.GROUPED_BY_CATEGORY);
-		
+
 		expListAdapter = new ExpandableListAdapter(this, groupList, groupedTaskList, taskSource);
 		expListView.setAdapter(expListAdapter);
 		expListView.refreshDrawableState();

@@ -70,7 +70,7 @@ public class ChangeActivity extends Activity implements OnItemSelectedListener{
 
 				EditText editText = (EditText)findViewById(R.id.taskTitle);
 				editText.setText(aTask.title);
-				
+
 				Spinner spinner = (Spinner) findViewById(R.id.spinnerCategory);
 				spinner.setSelection(adapterCategory.getPosition(aTask.category));
 

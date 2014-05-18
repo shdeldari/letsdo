@@ -21,7 +21,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 	private Map<String, List<Task>> tasks;
 	private List<String> groups;
 	boolean selector = false;
-	private String activityName;
 	private TaskSource taskSource;
 
 
@@ -30,8 +29,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		this.tasks = laptopCollection;
 		this.groups = groups;
 		this.taskSource = taskSource;
-		//this.selector = selector;
-		activityName = context.getClass().getSimpleName();
 	}
 
 	public Object getChild(int groupPosition, int childPosition) {
@@ -120,7 +117,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		TextView item = (TextView) convertView.findViewById(R.id.group);
 		item.setTypeface(null, Typeface.BOLD);
 		item.setText(groupName);
-		
+
 		ImageButton chk = (ImageButton) convertView.findViewById(R.id.chkBox);
 		chk.setOnClickListener(new CustomClickListener(groupPosition, -1));
 
@@ -133,14 +130,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 	public boolean isChildSelectable(int groupPosition, int childPosition) {
 		return true;
-	}
-
-	public void multipleSelectableMode(){
-
-	}
-
-	public void enableDelete(int group_position, long child_position) {
-
 	}
 
 	public class CustomClickListener implements OnClickListener {
@@ -157,14 +146,16 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 		public void onClick(View v) { 
 			Toast.makeText(context, "delete task!", Toast.LENGTH_SHORT).show();
-			if(isChild)
+			if(isChild){
 				taskSource.deleteTask(((Task)getChild(groupPosition, childPosition)).getId());
+			}
 			else{
 				int groupSize = getChildrenCount(groupPosition);
 				for (int i = 0; i < groupSize; i++) {
 					taskSource.deleteTask(((Task)getChild(groupPosition, i)).getId());
 				}
 			}
+			notifyDataSetChanged();
 		}
 	}
 }

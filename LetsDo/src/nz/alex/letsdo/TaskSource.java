@@ -17,11 +17,11 @@ public class TaskSource {
 
 	private SQLiteHelper dbHelper = null;
 	private SQLiteDatabase database = null;
-	
+
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()); 
-	
+
 	private static TaskSource Instance = null;
-	
+
 	private TaskSource(Context context) {
 		dbHelper = new SQLiteHelper(context);
 	}
@@ -43,7 +43,7 @@ public class TaskSource {
 			columnSet.add(task.getCategory());
 		return columnSet;	
 	}
-	
+
 	private Set<String> getAllAssignees(){
 		Set<String> columnSet = new HashSet<String>();
 		for (Task task: getAllTasks())
@@ -56,7 +56,7 @@ public class TaskSource {
 			return (Instance = new TaskSource(context));
 		return Instance;
 	}
-	
+
 	public void open() throws SQLException {
 		database = dbHelper.getWritableDatabase();
 	}
@@ -88,33 +88,33 @@ public class TaskSource {
 		values.put(TaskColumns.DESCRIPTION.name(), aTask.description);
 		values.put(TaskColumns.DATEDUE.name(), aTask.dateDue);
 		values.put(TaskColumns.STATUS.name(), aTask.status.name());
-		
+
 		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
-		
+
 		String where = TaskColumns.ID.name() + " = " + Integer.toString(taskId);
-		
+
 		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
 	}
 
 	public void closeTask(int taskId){
 		ContentValues values = new ContentValues();
 		values.put(TaskColumns.STATUS.name(), TaskStatus.CLOSED.name());
-		
+
 		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
-		
+
 		String where = TaskColumns.ID.name() + " = " + Integer.toString(taskId);
-		
+
 		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
 	}
 
 	public void openTask(int taskId){
 		ContentValues values = new ContentValues();
 		values.put(TaskColumns.STATUS.name(), TaskStatus.OPENED.name());
-		
+
 		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
 
 		String where = TaskColumns.ID.name() + " = " + Integer.toString(taskId);
-		
+
 		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
 	}
 
@@ -141,7 +141,7 @@ public class TaskSource {
 				cursor.getString(TaskColumns.DATEDUE.ordinal()),
 				TaskStatus.valueOf(cursor.getString(TaskColumns.STATUS.ordinal())));
 	}
-	
+
 	public ArrayList<Task> getTasksOrderedBy(String column){
 		ArrayList<Task> tasksArray = new ArrayList<Task>();
 		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns, null, null, null, null, column +" DESC");

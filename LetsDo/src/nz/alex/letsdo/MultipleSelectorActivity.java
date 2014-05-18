@@ -133,7 +133,7 @@ public class MultipleSelectorActivity extends Activity {
     protected void updateList(){
     	groupList = createGroupList(); 
 		allTaskList = createCollection(groupList);
-		expListAdapter = new ExpandableListAdapter(this, groupList, createCollection(groupList));
+		expListAdapter = new ExpandableListAdapter(this, groupList, createCollection(groupList), taskSource);
 		expListView.setAdapter(expListAdapter);
 		expListView.refreshDrawableState();
     }

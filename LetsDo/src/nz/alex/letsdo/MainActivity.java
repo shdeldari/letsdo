@@ -170,7 +170,7 @@ public class MainActivity extends Activity {
 				int groupPosition, int childPosition, long id) {
 			final Task selected = (Task) expListAdapter.getChild(
 					groupPosition, childPosition);
-			taskSource.close();
+			//taskSource.close();
 			Intent intent = new Intent(getApplicationContext(), ChangeActivity.class);
 			intent.putExtra(EXTRA_MESSAGE, selected.getId());
 			startActivity(intent);
@@ -295,7 +295,7 @@ public class MainActivity extends Activity {
 		else 
 			groupedTaskList = createCollection(GroupMode.GROUPED_BY_CATEGORY);
 		
-		expListAdapter = new ExpandableListAdapter(this, groupList, groupedTaskList);
+		expListAdapter = new ExpandableListAdapter(this, groupList, groupedTaskList, taskSource);
 		expListView.setAdapter(expListAdapter);
 		expListView.refreshDrawableState();
 	}

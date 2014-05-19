@@ -1,10 +1,19 @@
 package nz.alex.letsdo;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract.Calendars;
+import android.provider.CalendarContract.Events;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,6 +56,28 @@ public class ChangeActivity extends Activity implements OnItemSelectedListener{
 
 		customValue = getString(R.string.customValue);
 
+/*		if (calID != 0){
+			Calendar beginTime = Calendar.getInstance();
+			beginTime.set(2014, 5, 20, 8, 45);
+			long startMillis = beginTime.getTimeInMillis();
+			Calendar endTime = Calendar.getInstance();
+			endTime.set(2014, 5, 20, 9, 45);
+			long endMillis = endTime.getTimeInMillis();
+
+			ContentValues values = new ContentValues();
+			values.put(Events.DTSTART, startMillis);
+			values.put(Events.DTEND, endMillis);
+			values.put(Events.TITLE, "My first test");
+			values.put(Events.DESCRIPTION, "Group workout");
+			values.put(Events.CALENDAR_ID, calID);
+			String timeZone = TimeZone.getDefault().getID();
+			values.put(Events.EVENT_TIMEZONE, timeZone);
+			uri = cr.insert(Events.CONTENT_URI, values);
+		}
+
+		// get the event ID that is the last element in the Uri
+		long eventID = Long.parseLong(uri.getLastPathSegment());*/
+
 		Spinner spinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
 		adapterCategory = new ArrayAdapter<String>(ChangeActivity.this, android.R.layout.simple_spinner_item, taskSource.getCategoryList());
 		adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -70,7 +101,7 @@ public class ChangeActivity extends Activity implements OnItemSelectedListener{
 
 				EditText editText = (EditText)findViewById(R.id.taskTitle);
 				editText.setText(aTask.title);
-				
+
 				Spinner spinner = (Spinner) findViewById(R.id.spinnerCategory);
 				spinner.setSelection(adapterCategory.getPosition(aTask.category));
 

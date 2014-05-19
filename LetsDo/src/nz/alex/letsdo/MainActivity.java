@@ -5,14 +5,21 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract.Calendars;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,6 +34,22 @@ import android.widget.Toast;
 import android.widget.Switch;
 
 public class MainActivity extends Activity {
+	private static final String DEBUG_TAG = "LetsDo.MainActivity";
+	// Projection array. Creating indices for this array instead of doing
+	// dynamic lookups improves performance.
+	public static final String[] EVENT_PROJECTION = new String[] {
+		Calendars._ID,                           // 0
+		Calendars.ACCOUNT_NAME,                  // 1
+		Calendars.CALENDAR_DISPLAY_NAME,         // 2
+		Calendars.OWNER_ACCOUNT                  // 3
+	};
+
+	// The indices for the projection array above.
+	private static final int PROJECTION_ID_INDEX = 0;
+	private static final int PROJECTION_ACCOUNT_NAME_INDEX = 1;
+	private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
+	private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
+
 	protected enum ActivityMode {
 		LIST,
 		DELETE;
@@ -298,5 +321,54 @@ public class MainActivity extends Activity {
 		expListAdapter = new ExpandableListAdapter(this, groupList, groupedTaskList, taskSource);
 		expListView.setAdapter(expListAdapter);
 		expListView.refreshDrawableState();
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == R.id.action_settings){
+			// Run query
+			ContentResolver cr = getContentResolver();
+			Uri uri = Calendars.CONTENT_URI;   
+			Cursor cur = cr.query(uri, EVENT_PROJECTION, null, null, null);
+
+/*			long calID = 0;
+			while (cur.moveToNext()){
+				calID = cur.getLong(PROJECTION_ID_INDEX);
+				break;
+			}
+*/			
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Select a Calendar to Sync")
+			.setSingleChoiceItems(cur, -1, Calendars.CALENDAR_DISPLAY_NAME, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					Log.d(DEBUG_TAG, "selected item is " + which);
+				}
+				
+				
+			})
+			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					Log.d(DEBUG_TAG, "AlertDialog's OK pressed");
+				}
+			})
+			.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					Log.d(DEBUG_TAG, "AlertDialog's Cancel pressed");
+				}
+			});
+			AlertDialog dialog = builder.create();
+			dialog.show();
+		}
+			
+		return super.onOptionsItemSelected(item);
 	}
 }

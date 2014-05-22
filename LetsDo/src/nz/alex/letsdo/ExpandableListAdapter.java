@@ -2,8 +2,11 @@ package nz.alex.letsdo;
 
 import java.util.List;
 import java.util.Map;
+
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
@@ -150,10 +153,27 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 				taskSource.deleteTask(((Task)getChild(groupPosition, childPosition)).getId());
 			}
 			else{
-				int groupSize = getChildrenCount(groupPosition);
-				for (int i = 0; i < groupSize; i++) {
-					taskSource.deleteTask(((Task)getChild(groupPosition, i)).getId());
-				}
+				AlertDialog.Builder builder = new AlertDialog.Builder(context);
+				builder.setTitle("Delete").
+						setMessage("Are you sure to delete group ("+ groups.get(groupPosition) +")?").
+						setCancelable(false).
+						setPositiveButton("YES",new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,int id) {
+								int groupSize = getChildrenCount(groupPosition);
+								for (int i = 0; i < groupSize; i++) {
+									taskSource.deleteTask(((Task)getChild(groupPosition, i)).getId());
+								}
+								dialog.cancel();
+							}
+						  })
+						.setNegativeButton("NO,NO!",new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,int id) {
+								dialog.cancel();
+							}
+						});
+				AlertDialog dialog = builder.create();
+				dialog.show();
+				
 			}
 			notifyDataSetChanged();
 		}

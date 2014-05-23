@@ -4,9 +4,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+
+import nz.alex.letsdo.MainActivity.GroupMode;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -179,5 +183,41 @@ public class TaskSource {
 	public int getLen(){
 		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns, null, null, null, null, null);
 		return cursor.getCount();
+	}
+	
+	public Map<String, List<Task>> getGroupedTasks(GroupMode mode) {
+		LinkedHashMap<String, List<Task>> groupedTaskList = new LinkedHashMap<String, List<Task>>();
+		ArrayList<Task> tasks = getAllTasks();
+		List<String> groupList;
+
+		if (mode == GroupMode.GROUPED_BY_ASSIGNEE)
+			groupList = getAssigneeList();
+		else 
+			groupList = getCategoryList();
+
+		for (String groupName : groupList) {
+			ArrayList<Task> openedTasks = new ArrayList<Task>();
+			ArrayList<Task> closedTasks = new ArrayList<Task>();
+			for (Task task: tasks) 
+				if (mode == GroupMode.GROUPED_BY_ASSIGNEE){
+					if(task.getAssignee().equalsIgnoreCase(groupName)){
+						if (task.isOpen())
+							openedTasks.add(task);
+						else
+							closedTasks.add(task);
+					}
+				}
+				else{
+					if(task.getCategory().equalsIgnoreCase(groupName)){
+						if (task.isOpen())
+							openedTasks.add(task);
+						else
+							closedTasks.add(task);
+					}
+				}
+			openedTasks.addAll(closedTasks);
+			groupedTaskList.put(groupName.trim(), openedTasks);
+		}
+		return groupedTaskList;
 	}
 }

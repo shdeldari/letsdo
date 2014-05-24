@@ -20,7 +20,7 @@ public class TaskSource {
 	
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()); 
 	
-	private static TaskSource Instance = null;
+	private static TaskSource _instance = null;
 	
 	private TaskSource(Context context) {
 		dbHelper = new SQLiteHelper(context);
@@ -52,9 +52,9 @@ public class TaskSource {
 	}
 
 	public static TaskSource GetInstance(Context context){
-		if (Instance == null)
-			return (Instance = new TaskSource(context));
-		return Instance;
+		if (_instance == null)
+			return (_instance = new TaskSource(context));
+		return _instance;
 	}
 	
 	public void open() throws SQLException {

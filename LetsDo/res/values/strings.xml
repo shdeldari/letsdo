@@ -3,6 +3,7 @@
 
     <string name="app_name">LetsDo</string>
     <string name="action_settings">Settings</string>
+    <string name="action_sync">Sync</string>
     <string name="taskTitle">Title</string>
     <string name="taskAssignee">Assignee</string>
     <string name="taskCategory">Category</string>
@@ -29,5 +30,6 @@
     <string name="filterSw">Group by</string>
     <string name="left">Category</string>
     <string name="right">Assignee</string>
-
+    <string name="optionsFileName">options</string>
+    
 </resources>

@@ -122,6 +122,7 @@ containing a value of this type.
         public static final int LinearLayout1=0x7f08000c;
         public static final int ScrollView1=0x7f080000;
         public static final int action_settings=0x7f080018;
+        public static final int action_sync=0x7f080019;
         public static final int addTask=0x7f08000e;
         public static final int addValue=0x7f080017;
         public static final int chkBox=0x7f080012;
@@ -161,33 +162,35 @@ containing a value of this type.
     }
     public static final class string {
         public static final int action_settings=0x7f050001;
-        public static final int addAssigneeTitle=0x7f050012;
-        public static final int addCategoryTitle=0x7f050011;
-        public static final int addTask=0x7f05000a;
-        public static final int addValue=0x7f050010;
+        public static final int action_sync=0x7f050002;
+        public static final int addAssigneeTitle=0x7f050013;
+        public static final int addCategoryTitle=0x7f050012;
+        public static final int addTask=0x7f05000b;
+        public static final int addValue=0x7f050011;
         public static final int app_name=0x7f050000;
-        public static final int assigneeHint=0x7f050013;
-        public static final int categoryHint=0x7f05000e;
-        public static final int customValue=0x7f05000f;
-        public static final int delTask=0x7f050018;
-        public static final int discardTask=0x7f05000c;
-        public static final int filterSw=0x7f050019;
-        public static final int left=0x7f05001a;
-        public static final int right=0x7f05001b;
-        public static final int saveTask=0x7f05000b;
-        public static final int selectAll=0x7f050017;
-        public static final int taskAssignee=0x7f050003;
-        public static final int taskCategory=0x7f050004;
-        public static final int taskDateCreated=0x7f050007;
-        public static final int taskDateDue=0x7f050006;
-        public static final int taskDateModified=0x7f050008;
-        public static final int taskDescription=0x7f050005;
-        public static final int taskStatus=0x7f050009;
-        public static final int taskTitle=0x7f050002;
-        public static final int titleHint=0x7f05000d;
-        public static final int title_activity_add=0x7f050014;
-        public static final int title_activity_change=0x7f050015;
-        public static final int title_activity_select=0x7f050016;
+        public static final int assigneeHint=0x7f050014;
+        public static final int categoryHint=0x7f05000f;
+        public static final int customValue=0x7f050010;
+        public static final int delTask=0x7f050019;
+        public static final int discardTask=0x7f05000d;
+        public static final int filterSw=0x7f05001a;
+        public static final int left=0x7f05001b;
+        public static final int optionsFileName=0x7f05001d;
+        public static final int right=0x7f05001c;
+        public static final int saveTask=0x7f05000c;
+        public static final int selectAll=0x7f050018;
+        public static final int taskAssignee=0x7f050004;
+        public static final int taskCategory=0x7f050005;
+        public static final int taskDateCreated=0x7f050008;
+        public static final int taskDateDue=0x7f050007;
+        public static final int taskDateModified=0x7f050009;
+        public static final int taskDescription=0x7f050006;
+        public static final int taskStatus=0x7f05000a;
+        public static final int taskTitle=0x7f050003;
+        public static final int titleHint=0x7f05000e;
+        public static final int title_activity_add=0x7f050015;
+        public static final int title_activity_change=0x7f050016;
+        public static final int title_activity_select=0x7f050017;
     }
     public static final class style {
         /** 

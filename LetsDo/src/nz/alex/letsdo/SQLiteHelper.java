@@ -46,7 +46,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 			if (column.ordinal() < TaskColumns.values().length - 1)
 				DATABASE_CREATE += ", ";
 		}
-		
+
 		DATABASE_CREATE += ");";
 
 		database.execSQL(DATABASE_CREATE);

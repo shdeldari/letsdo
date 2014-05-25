@@ -18,12 +18,11 @@
 
     <Button
         android:id="@+id/addValue"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="@string/addValue"
-        style="?android:attr/buttonBarButtonStyle">
-        
+        android:text="@string/addValue" >
     </Button>
 
 </LinearLayout>

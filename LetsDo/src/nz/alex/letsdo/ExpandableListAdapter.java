@@ -2,8 +2,12 @@ package nz.alex.letsdo;
 
 import java.util.List;
 import java.util.Map;
+
+import nz.alex.letsdo.MainActivity.GroupMode;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
@@ -21,17 +25,20 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 	private Map<String, List<Task>> tasks;
 	private List<String> groups;
 	boolean selector = false;
-	private String activityName;
 	private TaskSource taskSource;
+	private GroupMode mode;
 
-
-	public ExpandableListAdapter(Activity context, List<String> groups, Map<String, List<Task>> laptopCollection, TaskSource taskSource) {
+	public ExpandableListAdapter(Activity context, List<String> groups, Map<String, List<Task>> tasks, TaskSource taskSource) {
 		this.context = context;
-		this.tasks = laptopCollection;
+		this.tasks = tasks;
 		this.groups = groups;
 		this.taskSource = taskSource;
-		//this.selector = selector;
-		activityName = context.getClass().getSimpleName();
+	}
+	public ExpandableListAdapter(Activity context, GroupMode mode, TaskSource taskSource) {
+		this.context = context;
+		this.taskSource = taskSource;
+		this.mode = mode;
+		swapDataset(mode);
 	}
 
 	public Object getChild(int groupPosition, int childPosition) {
@@ -120,7 +127,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		TextView item = (TextView) convertView.findViewById(R.id.group);
 		item.setTypeface(null, Typeface.BOLD);
 		item.setText(groupName);
-		
+
 		ImageButton chk = (ImageButton) convertView.findViewById(R.id.chkBox);
 		chk.setOnClickListener(new CustomClickListener(groupPosition, -1));
 
@@ -135,12 +142,19 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		return true;
 	}
 
-	public void multipleSelectableMode(){
-
+	public void swapDataset(List<String> groups, Map<String, List<Task>> tasks){
+		this.groups = groups;
+		this.tasks = tasks;
+		notifyDataSetChanged();
 	}
-
-	public void enableDelete(int group_position, long child_position) {
-
+	
+	public void swapDataset(GroupMode mode){
+		if(mode == GroupMode.GROUPED_BY_ASSIGNEE)
+			this.groups = TaskSource.GetInstance(context).getAssigneeList();
+		else
+			this.groups = TaskSource.GetInstance(context).getCategoryList();
+		this.tasks = TaskSource.GetInstance(context).getGroupedTasks(mode);
+		notifyDataSetChanged();
 	}
 
 	public class CustomClickListener implements OnClickListener {
@@ -157,14 +171,34 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 		public void onClick(View v) { 
 			Toast.makeText(context, "delete task!", Toast.LENGTH_SHORT).show();
-			if(isChild)
+			if(isChild){
 				taskSource.deleteTask(((Task)getChild(groupPosition, childPosition)).getId());
-			else{
-				int groupSize = getChildrenCount(groupPosition);
-				for (int i = 0; i < groupSize; i++) {
-					taskSource.deleteTask(((Task)getChild(groupPosition, i)).getId());
-				}
 			}
+			else{
+				AlertDialog.Builder builder = new AlertDialog.Builder(context);
+				builder.setTitle("Delete").
+				setMessage("Are you sure to delete group ("+ groups.get(groupPosition) +")?").
+				setCancelable(false).
+				setPositiveButton("YES",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						int groupSize = getChildrenCount(groupPosition);
+						for (int i = 0; i < groupSize; i++) {
+							taskSource.deleteTask(((Task)getChild(groupPosition, i)).getId());
+						}
+						dialog.cancel();
+					}
+				})
+				.setNegativeButton("NO,NO!",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
+					}
+				});
+				AlertDialog dialog = builder.create();
+				dialog.show();
+
+			}
+			swapDataset(mode);
+//			notifyDataSetChanged();
 		}
 	}
 }

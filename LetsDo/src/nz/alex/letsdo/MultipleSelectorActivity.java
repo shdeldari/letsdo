@@ -31,16 +31,16 @@ public class MultipleSelectorActivity extends Activity {
 
 	public final static String EXTRA_MESSAGE = "nz.alex.letsdo.MESSAGE";
 	protected Switch filterSw;
-	
-	///-----
-    List<String> childList;
-    protected Map<String, List<Task>> allTaskList;
-    protected List<String> groupList;
-    protected ExpandableListView expListView;
-    protected ExpandableListAdapter expListAdapter;
-    //-------
 
-	
+	///-----
+	List<String> childList;
+	protected Map<String, List<Task>> allTaskList;
+	protected List<String> groupList;
+	protected ExpandableListView expListView;
+	protected ExpandableListAdapter expListAdapter;
+	//-------
+
+
 	public void onFilterClick(View view){
 		updateList();
 	}
@@ -50,13 +50,13 @@ public class MultipleSelectorActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		setupLayout();
-		
+
 		taskSource = TaskSource.GetInstance(this);
 		taskSource.open();
 		tasks = taskSource.getAllTasks();
-			
+
 		updateList();
-       
+
 	}
 
 	private void setupLayout() {
@@ -67,7 +67,7 @@ public class MultipleSelectorActivity extends Activity {
 				onFilterClick(arg0);
 			}
 		});
-		
+
 		expListView = (ExpandableListView) findViewById(R.id.listView1);
 	}
 
@@ -95,46 +95,46 @@ public class MultipleSelectorActivity extends Activity {
 		return true;
 	}
 
-	
-    private List<String> createGroupList() {
-    	List<String> groupList = new ArrayList<String>();
-        if(filterSw.isChecked())
-        	groupList = TaskSource.GetInstance(context).getAssigneeList();
-        else 
-        	groupList = TaskSource.GetInstance(context).getCategoryList();
+
+	private List<String> createGroupList() {
+		List<String> groupList = new ArrayList<String>();
+		if(filterSw.isChecked())
+			groupList = TaskSource.GetInstance(context).getAssigneeList();
+		else 
+			groupList = TaskSource.GetInstance(context).getCategoryList();
 		return groupList;
-    }
- 
-    private Map<String, List<Task>> createCollection(List<String> groupList) {
-    	allTaskList = new LinkedHashMap<String, List<Task>>();
-    	if(filterSw.isChecked()){
-    		ArrayList<Task> tasks = TaskSource.GetInstance(context).getTasksOrderedBy(TaskColumns.ASSIGNEE.name());
-    		for (String g : groupList) {
-    			ArrayList<Task> s = new ArrayList<Task>();
-    			for (Task t: tasks) 
+	}
+
+	private Map<String, List<Task>> createCollection(List<String> groupList) {
+		allTaskList = new LinkedHashMap<String, List<Task>>();
+		if(filterSw.isChecked()){
+			ArrayList<Task> tasks = TaskSource.GetInstance(context).getTasksOrderedBy(TaskColumns.ASSIGNEE.name());
+			for (String g : groupList) {
+				ArrayList<Task> s = new ArrayList<Task>();
+				for (Task t: tasks) 
 					if(t.getAssignee().equalsIgnoreCase(g))
 						s.add(t);
-    			allTaskList.put(g.trim(), s);
+				allTaskList.put(g.trim(), s);
 			}
-    	}
-    	else{
-    		ArrayList<Task> tasks = TaskSource.GetInstance(context).getTasksOrderedBy(TaskColumns.CATEGORY.name());
-    		for (String g : groupList) {
-    			ArrayList<Task> s = new ArrayList<Task>();
-    			for (Task t: tasks) 
-    				if(t.getCategory().equalsIgnoreCase(g))
-    					s.add(t);
-    			allTaskList.put(g.trim(), s);
+		}
+		else{
+			ArrayList<Task> tasks = TaskSource.GetInstance(context).getTasksOrderedBy(TaskColumns.CATEGORY.name());
+			for (String g : groupList) {
+				ArrayList<Task> s = new ArrayList<Task>();
+				for (Task t: tasks) 
+					if(t.getCategory().equalsIgnoreCase(g))
+						s.add(t);
+				allTaskList.put(g.trim(), s);
 			}
-    	}
-    	return allTaskList;
-    }
-    
-    protected void updateList(){
-    	groupList = createGroupList(); 
+		}
+		return allTaskList;
+	}
+
+	protected void updateList(){
+		groupList = createGroupList(); 
 		allTaskList = createCollection(groupList);
 		expListAdapter = new ExpandableListAdapter(this, groupList, createCollection(groupList), taskSource);
 		expListView.setAdapter(expListAdapter);
 		expListView.refreshDrawableState();
-    }
+	}
 }

@@ -4,14 +4,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+
+import nz.alex.letsdo.MainActivity.GroupMode;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+
 
 public class TaskSource {
 
@@ -19,7 +24,7 @@ public class TaskSource {
 	private SQLiteDatabase database = null;
 	
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()); 
-	
+
 	private static TaskSource _instance = null;
 	
 	private TaskSource(Context context) {
@@ -43,7 +48,7 @@ public class TaskSource {
 			columnSet.add(task.getCategory());
 		return columnSet;	
 	}
-	
+
 	private Set<String> getAllAssignees(){
 		Set<String> columnSet = new HashSet<String>();
 		for (Task task: getAllTasks())
@@ -56,7 +61,7 @@ public class TaskSource {
 			return (_instance = new TaskSource(context));
 		return _instance;
 	}
-	
+
 	public void open() throws SQLException {
 		database = dbHelper.getWritableDatabase();
 	}
@@ -88,33 +93,33 @@ public class TaskSource {
 		values.put(TaskColumns.DESCRIPTION.name(), aTask.description);
 		values.put(TaskColumns.DATEDUE.name(), aTask.dateDue);
 		values.put(TaskColumns.STATUS.name(), aTask.status.name());
-		
+
 		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
-		
+
 		String where = TaskColumns.ID.name() + " = " + Integer.toString(taskId);
-		
+
 		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
 	}
 
 	public void closeTask(int taskId){
 		ContentValues values = new ContentValues();
 		values.put(TaskColumns.STATUS.name(), TaskStatus.CLOSED.name());
-		
+
 		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
-		
+
 		String where = TaskColumns.ID.name() + " = " + Integer.toString(taskId);
-		
+
 		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
 	}
 
 	public void openTask(int taskId){
 		ContentValues values = new ContentValues();
 		values.put(TaskColumns.STATUS.name(), TaskStatus.OPENED.name());
-		
+
 		values.put(TaskColumns.DATEMODIFIED.name(), dateFormat.format(new Date()));
 
 		String where = TaskColumns.ID.name() + " = " + Integer.toString(taskId);
-		
+
 		database.update(SQLiteHelper.TABLE_TASKS, values, where, null);
 	}
 
@@ -141,7 +146,7 @@ public class TaskSource {
 				cursor.getString(TaskColumns.DATEDUE.ordinal()),
 				TaskStatus.valueOf(cursor.getString(TaskColumns.STATUS.ordinal())));
 	}
-	
+
 	public ArrayList<Task> getTasksOrderedBy(String column){
 		ArrayList<Task> tasksArray = new ArrayList<Task>();
 		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns, null, null, null, null, column +" DESC");
@@ -179,5 +184,41 @@ public class TaskSource {
 	public int getLen(){
 		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, dbHelper.allColumns, null, null, null, null, null);
 		return cursor.getCount();
+	}
+	
+	public Map<String, List<Task>> getGroupedTasks(GroupMode mode) {
+		LinkedHashMap<String, List<Task>> groupedTaskList = new LinkedHashMap<String, List<Task>>();
+		ArrayList<Task> tasks = getAllTasks();
+		List<String> groupList;
+
+		if (mode == GroupMode.GROUPED_BY_ASSIGNEE)
+			groupList = getAssigneeList();
+		else 
+			groupList = getCategoryList();
+
+		for (String groupName : groupList) {
+			ArrayList<Task> openedTasks = new ArrayList<Task>();
+			ArrayList<Task> closedTasks = new ArrayList<Task>();
+			for (Task task: tasks) 
+				if (mode == GroupMode.GROUPED_BY_ASSIGNEE){
+					if(task.getAssignee().equalsIgnoreCase(groupName)){
+						if (task.isOpen())
+							openedTasks.add(task);
+						else
+							closedTasks.add(task);
+					}
+				}
+				else{
+					if(task.getCategory().equalsIgnoreCase(groupName)){
+						if (task.isOpen())
+							openedTasks.add(task);
+						else
+							closedTasks.add(task);
+					}
+				}
+			openedTasks.addAll(closedTasks);
+			groupedTaskList.put(groupName.trim(), openedTasks);
+		}
+		return groupedTaskList;
 	}
 }

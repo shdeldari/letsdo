@@ -126,7 +126,15 @@ public class MainActivity extends Activity {
 		taskSource.open();
 		tasks = taskSource.getAllTasks();
 
-		updateList();
+		if (filterSw.isChecked()){
+			expListAdapter = new ExpandableListAdapter(this, GroupMode.GROUPED_BY_ASSIGNEE, taskSource);
+		}
+		else{ 
+			expListAdapter = new ExpandableListAdapter(this, GroupMode.GROUPED_BY_CATEGORY, taskSource);
+		}
+		
+		expListView.setAdapter(expListAdapter);
+		
 		expListView.setOnChildClickListener(childClickListener);
 		expListView.setOnItemLongClickListener(itemLongClickListener);
 		expListView.setOnTouchListener(gestureListener);
@@ -228,6 +236,10 @@ public class MainActivity extends Activity {
 	};
 
 	protected void OnListSwipeLeft(int x, int y){
+		if(filterSw.isChecked())
+			groupedTaskList = TaskSource.GetInstance(context).getGroupedTasks(GroupMode.GROUPED_BY_ASSIGNEE);
+		else
+			groupedTaskList = TaskSource.GetInstance(context).getGroupedTasks(GroupMode.GROUPED_BY_CATEGORY);
 		long packedPosition = expListView.getExpandableListPosition(expListView.pointToPosition(x, y));
 		int groupPosition=0;
 		int childPosition=-1;
@@ -250,6 +262,10 @@ public class MainActivity extends Activity {
 	}
 
 	protected void OnListSwipeRight(int x, int y){
+		if(filterSw.isChecked())
+			groupedTaskList = TaskSource.GetInstance(context).getGroupedTasks(GroupMode.GROUPED_BY_ASSIGNEE);
+		else
+			groupedTaskList = TaskSource.GetInstance(context).getGroupedTasks(GroupMode.GROUPED_BY_CATEGORY);	
 		long packedPosition = expListView.getExpandableListPosition(expListView.pointToPosition(x, y));
 		int groupPosition=0;
 		int childPosition=-1;
@@ -271,50 +287,47 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	private Map<String, List<Task>> createCollection(GroupMode mode) {
-		groupedTaskList = new LinkedHashMap<String, List<Task>>();
-		ArrayList<Task> tasks = TaskSource.GetInstance(context).getAllTasks();
-		groupList = new ArrayList<String>();
-
-		if (mode == GroupMode.GROUPED_BY_ASSIGNEE)
-			groupList = TaskSource.GetInstance(context).getAssigneeList();
-		else 
-			groupList = TaskSource.GetInstance(context).getCategoryList();
-
-		for (String groupName : groupList) {
-			ArrayList<Task> openedTasks = new ArrayList<Task>();
-			ArrayList<Task> closedTasks = new ArrayList<Task>();
-			for (Task task: tasks) 
-				if (mode == GroupMode.GROUPED_BY_ASSIGNEE){
-					if(task.getAssignee().equalsIgnoreCase(groupName)){
-						if (task.isOpen())
-							openedTasks.add(task);
-						else
-							closedTasks.add(task);
-					}
-				}
-				else{
-					if(task.getCategory().equalsIgnoreCase(groupName)){
-						if (task.isOpen())
-							openedTasks.add(task);
-						else
-							closedTasks.add(task);
-					}
-				}
-			openedTasks.addAll(closedTasks);
-			groupedTaskList.put(groupName.trim(), openedTasks);
-		}
-		return groupedTaskList;
-	}
+//	private Map<String, List<Task>> createCollection(GroupMode mode) {
+//		groupedTaskList = new LinkedHashMap<String, List<Task>>();
+//		ArrayList<Task> tasks = TaskSource.GetInstance(context).getAllTasks();
+//		groupList = new ArrayList<String>();
+//
+//		if (mode == GroupMode.GROUPED_BY_ASSIGNEE)
+//			groupList = TaskSource.GetInstance(context).getAssigneeList();
+//		else 
+//			groupList = TaskSource.GetInstance(context).getCategoryList();
+//
+//		for (String groupName : groupList) {
+//			ArrayList<Task> openedTasks = new ArrayList<Task>();
+//			ArrayList<Task> closedTasks = new ArrayList<Task>();
+//			for (Task task: tasks) 
+//				if (mode == GroupMode.GROUPED_BY_ASSIGNEE){
+//					if(task.getAssignee().equalsIgnoreCase(groupName)){
+//						if (task.isOpen())
+//							openedTasks.add(task);
+//						else
+//							closedTasks.add(task);
+//					}
+//				}
+//				else{
+//					if(task.getCategory().equalsIgnoreCase(groupName)){
+//						if (task.isOpen())
+//							openedTasks.add(task);
+//						else
+//							closedTasks.add(task);
+//					}
+//				}
+//			openedTasks.addAll(closedTasks);
+//			groupedTaskList.put(groupName.trim(), openedTasks);
+//		}
+//		return groupedTaskList;
+//	}
 
 	protected void updateList(){
-		if (filterSw.isChecked())
-			groupedTaskList = createCollection(GroupMode.GROUPED_BY_ASSIGNEE);
-		else 
-			groupedTaskList = createCollection(GroupMode.GROUPED_BY_CATEGORY);
-
-		expListAdapter = new ExpandableListAdapter(this, groupList, groupedTaskList, taskSource);
-		expListView.setAdapter(expListAdapter);
+		if(filterSw.isChecked())
+			expListAdapter.swapDataset(GroupMode.GROUPED_BY_ASSIGNEE);
+		else
+			expListAdapter.swapDataset(GroupMode.GROUPED_BY_CATEGORY);
 		expListView.refreshDrawableState();
 	}
 

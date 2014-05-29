@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -200,5 +201,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 			swapDataset(mode);
 //			notifyDataSetChanged();
 		}
+	}
+
+	public List<String> getGroupList() {
+		return groups;
 	}
 }

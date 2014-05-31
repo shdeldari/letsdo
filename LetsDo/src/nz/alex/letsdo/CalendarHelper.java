@@ -80,20 +80,24 @@ public class CalendarHelper {
 		if (calendarId != -1){
 			for (Task task: tasks){
 				Calendar beginTime = Calendar.getInstance();
-				beginTime.set(2014, 5, 25, 8, 45);
+				beginTime.set(2025, 6, 24, 13, 0);
 				long startMillis = beginTime.getTimeInMillis();
 				Calendar endTime = Calendar.getInstance();
-				endTime.set(2014, 5, 25, 9, 45);
+				endTime.set(2025, 6, 24, 14, 0);
 				long endMillis = endTime.getTimeInMillis();
 
 				ContentValues values = new ContentValues();
 				values.put(Events.DTSTART, startMillis);
 				values.put(Events.DTEND, endMillis);
 				values.put(Events.TITLE, task.toString());
-				values.put(Events.DESCRIPTION, "<LetsDo></LetsDo>");
+				Interpreter interpreter = new Interpreter();
+				values.put(Events.DESCRIPTION, interpreter.compile(task));
+				
 				values.put(Events.CALENDAR_ID, calendarId);
 				String timeZone = TimeZone.getDefault().getID();
 				values.put(Events.EVENT_TIMEZONE, timeZone);
+				values.put(Events.AVAILABILITY, Events.AVAILABILITY_FREE);
+				//values.put(Events.RRULE, "FREQ=WEEKLY;WKST=SU;BYDAY=SU");				
 				Uri uri = contentResolver.insert(Events.CONTENT_URI, values);
 				// get the event ID that is the last element in the Uri
 				long eventID = Long.parseLong(uri.getLastPathSegment());
@@ -102,4 +106,5 @@ public class CalendarHelper {
 		}
 		return false;
 	}
+	
 }

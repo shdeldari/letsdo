@@ -41,6 +41,10 @@ class Task{
 		return taskModel.assignee;
 	}
 
+	public String getDescription(){
+		return taskModel.description;
+	}
+
 	public boolean isOpen(){
 		if (taskModel.status == TaskStatus.OPENED)
 			return true;

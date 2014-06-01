@@ -96,12 +96,8 @@ public class MainActivity extends Activity {
 	@Override
 	public void onBackPressed() {
 		if(DELETE_MODE == ActivityMode.DELETE){
-//			for (int i = 0; i < deleteBtn.size(); i++) {
-//				deleteBtn.get(i).setVisibility(View.INVISIBLE);
-//			}
 			DELETE_MODE = ActivityMode.LIST;
 			expListAdapter.setDeleteMode(DELETE_MODE);
-			//deleteBtn.clear();
 		}else{
 			super.onBackPressed();
 		}
@@ -225,8 +221,6 @@ public class MainActivity extends Activity {
 				int group_position, long child_position) {
 			DELETE_MODE = ActivityMode.DELETE;
 			expListAdapter.setDeleteMode(DELETE_MODE);
-			//arg1.findViewById(R.id.chkBox).setVisibility(View.VISIBLE);;
-			//deleteBtn.add(arg1.findViewById(R.id.chkBox));
 			return true;
 		}
 	};

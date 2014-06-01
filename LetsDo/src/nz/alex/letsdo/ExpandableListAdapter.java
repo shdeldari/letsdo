@@ -154,7 +154,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		}
 
 		public void onClick(View v) { 
-			Toast.makeText(context, "delete task!", Toast.LENGTH_SHORT).show();
 			if(isChild){
 				taskSource.deleteTask(((Task)getChild(groupPosition, childPosition)).getId());
 			}
@@ -179,9 +178,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 				});
 				AlertDialog dialog = builder.create();
 				dialog.show();
-
 			}
-			
 			swapDataset(group_mode);
 		}
 	}

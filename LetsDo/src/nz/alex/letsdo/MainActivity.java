@@ -49,7 +49,7 @@ public class MainActivity extends Activity {
 
 	public final static String EXTRA_MESSAGE = "nz.alex.letsdo.MESSAGE";
 	protected Switch filterSw;
-	protected boolean DELETE_MODE = false;
+	protected ActivityMode DELETE_MODE = ActivityMode.LIST;
 	protected ArrayList<View> deleteBtn = new ArrayList<View>();
 
 
@@ -95,12 +95,13 @@ public class MainActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		if(DELETE_MODE){
-			for (int i = 0; i < deleteBtn.size(); i++) {
-				deleteBtn.get(i).setVisibility(View.INVISIBLE);
-			}
-			DELETE_MODE = false;
-			deleteBtn.clear();
+		if(DELETE_MODE == ActivityMode.DELETE){
+//			for (int i = 0; i < deleteBtn.size(); i++) {
+//				deleteBtn.get(i).setVisibility(View.INVISIBLE);
+//			}
+			DELETE_MODE = ActivityMode.LIST;
+			expListAdapter.setDeleteMode(DELETE_MODE);
+			//deleteBtn.clear();
 		}else{
 			super.onBackPressed();
 		}
@@ -123,10 +124,10 @@ public class MainActivity extends Activity {
 		tasks = taskSource.getAllTasks();
 
 		if (filterSw.isChecked()){
-			expListAdapter = new ExpandableListAdapter(this, GroupMode.GROUPED_BY_ASSIGNEE, taskSource);
+			expListAdapter = new ExpandableListAdapter(this, GroupMode.GROUPED_BY_ASSIGNEE, taskSource, DELETE_MODE);
 		}
 		else{ 
-			expListAdapter = new ExpandableListAdapter(this, GroupMode.GROUPED_BY_CATEGORY, taskSource);
+			expListAdapter = new ExpandableListAdapter(this, GroupMode.GROUPED_BY_CATEGORY, taskSource, DELETE_MODE);
 		}
 		
 		expListView.setAdapter(expListAdapter);
@@ -222,9 +223,10 @@ public class MainActivity extends Activity {
 		@Override
 		public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 				int group_position, long child_position) {
-			DELETE_MODE = true;
-			arg1.findViewById(R.id.chkBox).setVisibility(View.VISIBLE);;
-			deleteBtn.add(arg1.findViewById(R.id.chkBox));
+			DELETE_MODE = ActivityMode.DELETE;
+			expListAdapter.setDeleteMode(DELETE_MODE);
+			//arg1.findViewById(R.id.chkBox).setVisibility(View.VISIBLE);;
+			//deleteBtn.add(arg1.findViewById(R.id.chkBox));
 			return true;
 		}
 	};

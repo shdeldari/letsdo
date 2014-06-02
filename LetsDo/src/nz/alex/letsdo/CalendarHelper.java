@@ -20,20 +20,29 @@ public class CalendarHelper {
 
 	private Cursor cursor = null;
 
+	Interpreter interpreter = new Interpreter();
+	
 	private static CalendarHelper _instance = null;
 
-	private static final String[] EVENT_PROJECTION = new String[] {
+	private static String APP_TAG = "LetsDo";
+
+	private static final String[] CALENDARS_PROJECTION = new String[] {
 		Calendars._ID,                           // 0
-		Calendars.ACCOUNT_NAME,                  // 1
 		Calendars.CALENDAR_DISPLAY_NAME,         // 2
-		Calendars.OWNER_ACCOUNT                  // 3
 	};
 
 	private static final int PROJECTION_ID_INDEX = 0;
-	//	private static final int PROJECTION_ACCOUNT_NAME_INDEX = 1;
-	//	private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
-	//	private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
 
+	private static final String[] EVENTS_PROJECTION = new String[] {
+		Events.TITLE,			// 0
+		Events.DESCRIPTION		// 1
+	};
+	
+	private static final int PROJECTION_TITLE_INDEX = 0;
+	private static final int PROJECTION_DESCRIPTION_INDEX = 1;
+
+	long startMillis, endMillis;
+	
 	public static CalendarHelper getInstance(Context context){
 		if (_instance == null)
 			return (_instance = new CalendarHelper(context));
@@ -44,7 +53,7 @@ public class CalendarHelper {
 		int calendarIndex = -1;
 
 		Uri uri = Calendars.CONTENT_URI;   
-		cursor = contentResolver.query(uri, EVENT_PROJECTION, null, null, null);
+		cursor = contentResolver.query(uri, CALENDARS_PROJECTION, null, null, null);
 		
 		if (calendarId != -1){
 			while(cursor.moveToNext()){
@@ -70,6 +79,12 @@ public class CalendarHelper {
 
 	private CalendarHelper(Context context) {
 		contentResolver = context.getContentResolver();
+		Calendar beginTime = Calendar.getInstance();
+		beginTime.set(2025, 6, 24, 13, 0);
+		startMillis = beginTime.getTimeInMillis();
+		Calendar endTime = Calendar.getInstance();
+		endTime.set(2025, 6, 24, 14, 0);
+		endMillis = endTime.getTimeInMillis();
 	}
 
 	public void SetCalendarId(long calId){
@@ -79,32 +94,47 @@ public class CalendarHelper {
 	public boolean UploadTasks(ArrayList<Task> tasks){
 		if (calendarId != -1){
 			for (Task task: tasks){
-				Calendar beginTime = Calendar.getInstance();
-				beginTime.set(2025, 6, 24, 13, 0);
-				long startMillis = beginTime.getTimeInMillis();
-				Calendar endTime = Calendar.getInstance();
-				endTime.set(2025, 6, 24, 14, 0);
-				long endMillis = endTime.getTimeInMillis();
-
 				ContentValues values = new ContentValues();
-				values.put(Events.DTSTART, startMillis);
-				values.put(Events.DTEND, endMillis);
-				values.put(Events.TITLE, task.toString());
-				Interpreter interpreter = new Interpreter();
-				values.put(Events.DESCRIPTION, interpreter.compile(task));
-				
 				values.put(Events.CALENDAR_ID, calendarId);
+				
 				String timeZone = TimeZone.getDefault().getID();
 				values.put(Events.EVENT_TIMEZONE, timeZone);
+				values.put(Events.DTSTART, startMillis);
+				values.put(Events.DTEND, endMillis);
+				
+				values.put(Events.TITLE, task.toString());
+				
+				values.put(Events.EVENT_LOCATION, APP_TAG);				
+				
 				values.put(Events.AVAILABILITY, Events.AVAILABILITY_FREE);
-				//values.put(Events.RRULE, "FREQ=WEEKLY;WKST=SU;BYDAY=SU");				
-				Uri uri = contentResolver.insert(Events.CONTENT_URI, values);
-				// get the event ID that is the last element in the Uri
-				long eventID = Long.parseLong(uri.getLastPathSegment());
+				
+				values.put(Events.DESCRIPTION, interpreter.compile(task));
+				
+				contentResolver.insert(Events.CONTENT_URI, values);
 			}
 			return true;
 		}
 		return false;
 	}
 	
+	public ArrayList<TaskModel> downloadTasks(){
+		if (calendarId != -1){
+			String selection = "((" + Events.DTSTART + " = ?) AND (" 
+                    + Events.DTEND + " = ?) AND ("
+                    + Events.EVENT_LOCATION + " = ?))";
+			
+			String[] selectionArgs = new String[] {String.valueOf(startMillis), String.valueOf(endMillis), APP_TAG};
+			
+			cursor = contentResolver.query(Events.CONTENT_URI, EVENTS_PROJECTION, selection, selectionArgs, "ASC");
+			
+			ArrayList<TaskModel> taskModels = new ArrayList<TaskModel>();
+			while (cursor.moveToNext()){
+				TaskModel taskModel = interpreter.deCompile(cursor.getString(PROJECTION_DESCRIPTION_INDEX));
+				taskModel.title = cursor.getString(PROJECTION_TITLE_INDEX);
+				taskModels.add(taskModel);
+			}
+			return taskModels;
+		}
+		return null;
+	}
 }

@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 public class Interpreter {
 
 	private static String DELIMETER = " :";
-	private static String APP_TAG = "LetsDo";
 
 	private Pattern pattern;
 	private Matcher matcher;
@@ -45,7 +44,7 @@ public class Interpreter {
 	}
 
 	public String compile(Task task){
-		return APP_TAG + DELIMETER + stuff(task.getCategory()) + DELIMETER	+ stuff(task.getDescription()) + DELIMETER + task.getStatus(); 
+		return stuff(task.getCategory()) + DELIMETER	+ stuff(task.getDescription()) + DELIMETER + task.getStatus(); 
 	}
 
 	public TaskModel deCompile(String str) {

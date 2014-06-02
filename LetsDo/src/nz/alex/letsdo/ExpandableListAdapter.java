@@ -3,6 +3,7 @@ package nz.alex.letsdo;
 import java.util.List;
 import java.util.Map;
 
+import nz.alex.letsdo.MainActivity.ActivityMode;
 import nz.alex.letsdo.MainActivity.GroupMode;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,18 +27,21 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 	private List<String> groups;
 	boolean selector = false;
 	private TaskSource taskSource;
-	private GroupMode mode;
+	private GroupMode group_mode;
+	private ActivityMode acitivity_mode;
 
-	public ExpandableListAdapter(Activity context, List<String> groups, Map<String, List<Task>> tasks, TaskSource taskSource) {
+	public ExpandableListAdapter(Activity context, List<String> groups, Map<String, List<Task>> tasks, TaskSource taskSource, ActivityMode list_mode) {
 		this.context = context;
 		this.tasks = tasks;
 		this.groups = groups;
 		this.taskSource = taskSource;
+		this.acitivity_mode = list_mode;
 	}
-	public ExpandableListAdapter(Activity context, GroupMode mode, TaskSource taskSource) {
+	public ExpandableListAdapter(Activity context, GroupMode mode, TaskSource taskSource, ActivityMode list_mode) {
 		this.context = context;
 		this.taskSource = taskSource;
-		this.mode = mode;
+		this.group_mode = mode;
+		this.acitivity_mode = list_mode;
 		swapDataset(mode);
 	}
 
@@ -52,7 +56,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 	public View getChildView(final int groupPosition, final int childPosition,
 			boolean isLastChild, View convertView, ViewGroup parent) {
 		final Task task = (Task) getChild(groupPosition, childPosition);
-		//System.out.println("getchildView-"+groupPosition+":"+childPosition+"-"+task.toString() );
 		LayoutInflater inflater = context.getLayoutInflater();
 
 		if (convertView == null) {
@@ -66,35 +69,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 			item.setPaintFlags(item.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
 
 		ImageButton chk = (ImageButton) convertView.findViewById(R.id.chkBox);
+		if(acitivity_mode == ActivityMode.DELETE)
+			chk.setVisibility(View.VISIBLE);
+		else if(acitivity_mode == ActivityMode.LIST)
+			chk.setVisibility(View.INVISIBLE);
 		chk.setOnClickListener(new CustomClickListener(groupPosition, childPosition));
-
-		//        ImageView delete = (ImageView) convertView.findViewById(R.id.delete);
-		//        delete.setOnClickListener(new OnClickListener() {
-		// 
-		//            public void onClick(View v) {
-		//                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-		//                builder.setMessage("Do you want to remove?");
-		//                builder.setCancelable(false);
-		//                builder.setPositiveButton("Yes",
-		//                        new DialogInterface.OnClickListener() {
-		//                            public void onClick(DialogInterface dialog, int id) {
-		//                                List<String> child =
-		//                                    tasks.get(groups.get(groupPosition));
-		//                                child.remove(childPosition);
-		//                                notifyDataSetChanged();
-		//                            }
-		//                        });
-		//                builder.setNegativeButton("No",
-		//                        new DialogInterface.OnClickListener() {
-		//                            public void onClick(DialogInterface dialog, int id) {
-		//                                dialog.cancel();
-		//                            }
-		//                        });
-		//                AlertDialog alertDialog = builder.create();
-		//                alertDialog.show();
-		//            }
-		//        });
-
+		
 		item.setText(task.toString());
 		return convertView;
 	}
@@ -129,13 +109,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		item.setText(groupName);
 
 		ImageButton chk = (ImageButton) convertView.findViewById(R.id.chkBox);
+		if(acitivity_mode == ActivityMode.DELETE)
+			chk.setVisibility(View.VISIBLE);
+		else if(acitivity_mode == ActivityMode.LIST)
+			chk.setVisibility(View.INVISIBLE);
 		chk.setOnClickListener(new CustomClickListener(groupPosition, -1));
 
 		return convertView;
 	}
 
 	public boolean hasStableIds() {
-		return true;
+		return false;
 	}
 
 	public boolean isChildSelectable(int groupPosition, int childPosition) {
@@ -170,7 +154,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		}
 
 		public void onClick(View v) { 
-			Toast.makeText(context, "delete task!", Toast.LENGTH_SHORT).show();
 			if(isChild){
 				taskSource.deleteTask(((Task)getChild(groupPosition, childPosition)).getId());
 			}
@@ -195,10 +178,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 				});
 				AlertDialog dialog = builder.create();
 				dialog.show();
-
 			}
-			swapDataset(mode);
-//			notifyDataSetChanged();
+			swapDataset(group_mode);
 		}
+	}
+	
+	public void setDeleteMode(ActivityMode mode){
+		acitivity_mode = mode;
+		swapDataset(group_mode);
+	}
+
+	public List<String> getGroupList() {
+		return groups;
 	}
 }

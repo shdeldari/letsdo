@@ -1,7 +1,6 @@
 package nz.alex.letsdo;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +49,7 @@ public class MainActivity extends Activity {
 
 	public final static String EXTRA_MESSAGE = "nz.alex.letsdo.MESSAGE";
 	protected Switch filterSw;
-	protected boolean DELETE_MODE = false;
+	protected ActivityMode DELETE_MODE = ActivityMode.LIST;
 	protected ArrayList<View> deleteBtn = new ArrayList<View>();
 
 
@@ -61,9 +60,6 @@ public class MainActivity extends Activity {
 	View.OnTouchListener gestureListener;
 
 	///-----
-	List<String> childList;
-	protected Map<String, List<Task>> groupedTaskList;
-	protected List<String> groupList;
 	protected ExpandableListView expListView;
 	protected ExpandableListAdapter expListAdapter;
 
@@ -99,12 +95,9 @@ public class MainActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		if(DELETE_MODE){
-			for (int i = 0; i < deleteBtn.size(); i++) {
-				deleteBtn.get(i).setVisibility(View.INVISIBLE);
-			}
-			DELETE_MODE = false;
-			deleteBtn.clear();
+		if(DELETE_MODE == ActivityMode.DELETE){
+			DELETE_MODE = ActivityMode.LIST;
+			expListAdapter.setDeleteMode(DELETE_MODE);
 		}else{
 			super.onBackPressed();
 		}
@@ -127,10 +120,10 @@ public class MainActivity extends Activity {
 		tasks = taskSource.getAllTasks();
 
 		if (filterSw.isChecked()){
-			expListAdapter = new ExpandableListAdapter(this, GroupMode.GROUPED_BY_ASSIGNEE, taskSource);
+			expListAdapter = new ExpandableListAdapter(this, GroupMode.GROUPED_BY_ASSIGNEE, taskSource, DELETE_MODE);
 		}
 		else{ 
-			expListAdapter = new ExpandableListAdapter(this, GroupMode.GROUPED_BY_CATEGORY, taskSource);
+			expListAdapter = new ExpandableListAdapter(this, GroupMode.GROUPED_BY_CATEGORY, taskSource, DELETE_MODE);
 		}
 		
 		expListView.setAdapter(expListAdapter);
@@ -216,8 +209,6 @@ public class MainActivity extends Activity {
 	public OnItemClickListener itemClickListener = new OnItemClickListener() {
 		@Override public void onItemClick(AdapterView<?> parent, View view, int position, long id){
 			taskSource.close();
-
-
 			Intent intent = new Intent(getApplicationContext(), ChangeActivity.class);
 			intent.putExtra(EXTRA_MESSAGE, tasks.get(position).getId());
 			startActivity(intent);
@@ -228,14 +219,14 @@ public class MainActivity extends Activity {
 		@Override
 		public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 				int group_position, long child_position) {
-			DELETE_MODE = true;
-			arg1.findViewById(R.id.chkBox).setVisibility(View.VISIBLE);;
-			deleteBtn.add(arg1.findViewById(R.id.chkBox));
+			DELETE_MODE = ActivityMode.DELETE;
+			expListAdapter.setDeleteMode(DELETE_MODE);
 			return true;
 		}
 	};
 
 	protected void OnListSwipeLeft(int x, int y){
+		Map<String, List<Task>> groupedTaskList;
 		if(filterSw.isChecked())
 			groupedTaskList = TaskSource.GetInstance(context).getGroupedTasks(GroupMode.GROUPED_BY_ASSIGNEE);
 		else
@@ -253,15 +244,18 @@ public class MainActivity extends Activity {
 			Log.d("FooLabel", "positionType was NULL - header/footer?");
 		}
 		if(childPosition>=0){
-			Task aTask = groupedTaskList.get(groupList.get(groupPosition)).get(childPosition);
+			Task aTask = groupedTaskList.get(expListAdapter.getGroupList().get(groupPosition)).get(childPosition);
 			aTask.setStatus(TaskStatus.OPENED);
 			taskSource.openTask(aTask.getId());
-
-			expListAdapter.notifyDataSetChanged();
+			if (filterSw.isChecked())
+				expListAdapter.swapDataset(GroupMode.GROUPED_BY_ASSIGNEE);
+			else 
+				expListAdapter.swapDataset(GroupMode.GROUPED_BY_CATEGORY);
 		}
 	}
 
 	protected void OnListSwipeRight(int x, int y){
+		Map<String, List<Task>> groupedTaskList;
 		if(filterSw.isChecked())
 			groupedTaskList = TaskSource.GetInstance(context).getGroupedTasks(GroupMode.GROUPED_BY_ASSIGNEE);
 		else
@@ -279,49 +273,15 @@ public class MainActivity extends Activity {
 			Log.d("FooLabel", "positionType was NULL - header/footer?");
 		}
 		if(childPosition>=0){
-			Task aTask = groupedTaskList.get(groupList.get(groupPosition)).get(childPosition);
+			Task aTask = groupedTaskList.get(expListAdapter.getGroupList().get(groupPosition)).get(childPosition);
 			aTask.setStatus(TaskStatus.CLOSED);
 			taskSource.closeTask(aTask.getId());
-
-			expListAdapter.notifyDataSetChanged();
+			if (filterSw.isChecked())
+				expListAdapter.swapDataset(GroupMode.GROUPED_BY_ASSIGNEE);
+			else 
+				expListAdapter.swapDataset(GroupMode.GROUPED_BY_CATEGORY);
 		}
 	}
-
-//	private Map<String, List<Task>> createCollection(GroupMode mode) {
-//		groupedTaskList = new LinkedHashMap<String, List<Task>>();
-//		ArrayList<Task> tasks = TaskSource.GetInstance(context).getAllTasks();
-//		groupList = new ArrayList<String>();
-//
-//		if (mode == GroupMode.GROUPED_BY_ASSIGNEE)
-//			groupList = TaskSource.GetInstance(context).getAssigneeList();
-//		else 
-//			groupList = TaskSource.GetInstance(context).getCategoryList();
-//
-//		for (String groupName : groupList) {
-//			ArrayList<Task> openedTasks = new ArrayList<Task>();
-//			ArrayList<Task> closedTasks = new ArrayList<Task>();
-//			for (Task task: tasks) 
-//				if (mode == GroupMode.GROUPED_BY_ASSIGNEE){
-//					if(task.getAssignee().equalsIgnoreCase(groupName)){
-//						if (task.isOpen())
-//							openedTasks.add(task);
-//						else
-//							closedTasks.add(task);
-//					}
-//				}
-//				else{
-//					if(task.getCategory().equalsIgnoreCase(groupName)){
-//						if (task.isOpen())
-//							openedTasks.add(task);
-//						else
-//							closedTasks.add(task);
-//					}
-//				}
-//			openedTasks.addAll(closedTasks);
-//			groupedTaskList.put(groupName.trim(), openedTasks);
-//		}
-//		return groupedTaskList;
-//	}
 
 	protected void updateList(){
 		if(filterSw.isChecked())

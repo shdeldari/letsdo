@@ -49,7 +49,7 @@ public class Interpreter {
 
 	public TaskModel deCompile(String str) {
 		String [] splits = split(str);
-		TaskModel task = new TaskModel(null, deStuff(splits[1]), null, deStuff(splits[2]));
+		TaskModel task = new TaskModel(null, deStuff(splits[0]), null, deStuff(splits[1]));
 		if (splits[3].equals(TaskStatus.OPENED.toString()))
 			task.status = TaskStatus.OPENED;
 		else

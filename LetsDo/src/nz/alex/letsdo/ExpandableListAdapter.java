@@ -132,6 +132,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 	}
 	
 	public void swapDataset(GroupMode mode){
+		this.group_mode = mode;
 		if(mode == GroupMode.GROUPED_BY_ASSIGNEE)
 			this.groups = TaskSource.GetInstance(context).getAssigneeList();
 		else

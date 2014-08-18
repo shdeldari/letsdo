@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -68,10 +69,16 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 			item.setPaintFlags(item.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
 
 		ImageButton chk = (ImageButton) convertView.findViewById(R.id.chkBox);
-		if(acitivity_mode == ActivityMode.DELETE)
+		CheckBox chk1 = (CheckBox) convertView.findViewById(R.id.checkBox1);
+		
+		if(acitivity_mode == ActivityMode.DELETE){
 			chk.setVisibility(View.VISIBLE);
-		else if(acitivity_mode == ActivityMode.LIST)
+			chk1.setVisibility(View.VISIBLE);
+		}
+		else if(acitivity_mode == ActivityMode.LIST){
 			chk.setVisibility(View.INVISIBLE);
+			chk1.setVisibility(View.INVISIBLE);
+		}
 		chk.setOnClickListener(new CustomClickListener(groupPosition, childPosition));
 		
 		item.setText(task.toString());
